@@ -27,19 +27,19 @@ def tables():
 
     Tables[0]="""CREATE TABLE IF NOT EXISTS XRHSTHS(
                                 User_ID INTEGER NOT NULL,
-                                Email VARCHAR(50) NOT NULL UNIQUE,
-                                Username VARCHAR(20) NOT NULL UNIQUE,
-                                Password VARCHAR(20) NOT NULL,
-                                Eidos_xrhsth VARCHAR(1) NOT NULL,
+                                email VARCHAR(50) NOT NULL UNIQUE,
+                                username VARCHAR(20) NOT NULL UNIQUE,
+                                password VARCHAR(20) NOT NULL,
+                                eidos_xrhsth VARCHAR(1) NOT NULL,
                                 PRIMARY KEY(User_ID)
                                 );"""
 
     Tables[1]="""CREATE TABLE IF NOT EXISTS PROFIL_AITOUMENOY(
                                 ID_aitoumenou INTEGER NOT NULL,
-                                Onoma VARCHAR(30) NOT NULL,
-                                Eponymo VARCHAR(30) NOT NULL,
-                                Hlikia INTEGER NOT NULL,
-                                Fylo VARCHAR(5),
+                                onoma VARCHAR(30) NOT NULL,
+                                eponymo VARCHAR(30) NOT NULL,
+                                hlikia INTEGER NOT NULL,
+                                fylo VARCHAR(5),
                                 PRIMARY KEY(ID_aitoumenou),
                                 FOREIGN KEY(ID_aitoumenou) REFERENCES XRHSTHS(User_ID)
                                 ON UPDATE CASCADE
@@ -48,11 +48,11 @@ def tables():
 
     Tables[2]="""CREATE TABLE IF NOT EXISTS PROFIL_PAROXOU(
                                 ID_paroxou INTEGER NOT NULL,
-                                Eponymia VARCHAR(20) NOT NULL,
-                                Perigrafh TEXT NOT NULL,
-                                Dieythynsh VARCHAR(50) NOT NULL,
-                                Thlefono VARCHAR(10) NOT NULL,
-                                Bathmologia INTEGER,
+                                eponymia VARCHAR(20) NOT NULL,
+                                perigrafh TEXT NOT NULL,
+                                dieythynsh VARCHAR(50) NOT NULL,
+                                thlefono VARCHAR(10) NOT NULL,
+                                bathmologia INTEGER,
                                 PRIMARY KEY(ID_paroxou),
                                 FOREIGN KEY(ID_paroxou) REFERENCES XRHSTHS(User_ID)
                                 ON UPDATE CASCADE
@@ -227,6 +227,7 @@ def tables():
 def main():
     database="DB_project.db"
     sql_create_tables=tables()
+    """conn"""
     conn=create_connection(database)
     for i in range(0,NumofTables):
         if conn is not None:
@@ -235,16 +236,20 @@ def main():
             print("ERROR ERROR ERROR")
     in_pedio_spoudon(conn)
     in_kathgoria(conn)
-
-    print("-----Welcome to Job_Finder-----Please create account if you dont have one\nAlready have an account?\nPress Sign in to continue\n")
-    print("Press 1 for Sign up or 2 for Sign in")
-    signing=int(input())
-    if(signing==1):
-        jf.Sign_UP()
-    elif(signing==2):
-        jf.SignIn()
     conn.commit()
     conn.close()
+    
+    """conn1"""
+    print("-----Welcome to Job_Finder-----Please create account if you dont have one\nAlready have an account?\nPress Sign in to continue\n")
+    neos_xrhsths=input("Νέος χρήσητης; Ν/Ο : ")
+    while (neos_xrhsths=='N'):
+        print("Press 1 for Sign up or 2 for Sign in")
+        signing=int(input())
+        if(signing==1):
+            jf.Sign_UP()
+            neos_xrhsths=input("Νέος χρήσητης; Ν/Ο : ")
+        elif(signing==2):
+            jf.SignIn()
 
 def in_pedio_spoudon(conn):
     cur= conn.cursor()
