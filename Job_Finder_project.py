@@ -5,24 +5,24 @@ database="DB_project.db"
 
 
 def Sign_UP():
-    Email=input("Email:")
-    while(Email==''):
+    email=input("Email:")
+    while(email==''):
         print("Εισάγετε αποδεκτό Email")
-        Email=input("Email:")
-    Username=input("Username:")
-    while(Username==''):
+        email=input("Email:")
+    username=input("Username:")
+    while(username==''):
         print("Εισάγετε αποδεκτό Username")
-        Username=input("Username:")
-    Password=input("Κωδικός:")
-    while(Password=='' or CheckPassword(Password)==False):
+        username=input("Username:")
+    password=input("Κωδικός:")
+    while(password=='' or CheckPassword(password)==False):
         print("Ο Κωδικός πρέπει να περιέχει τουλάχιστον έναν αριθμό, έναν ειδικό χαρακτήρα και να είναι από 8 έως 16 χαρακτήρες")
-        Password=input("Password:")
-    Eidos_xrhsth=input("Συνδεθείτε ως αιτούμενος ή πάροχος εργασίας\nΠατήστε Α για αιτούμενο και P για πάροχο")
-    while(Eidos_xrhsth=='' or Eidos_xrhsth not in ["A","P"]):
+        password=input("Password:")
+    eidos_xrhsth=input("Συνδεθείτε ως αιτούμενος ή πάροχος εργασίας\nΠατήστε Α για αιτούμενο και P για πάροχο")
+    while(eidos_xrhsth=='' or eidos_xrhsth not in ["A","P"]):
         print("Please insert the correct information")
-        Eidos_xrhsth=input("Συνδεθείτε ως αιτούμενος ή πάροχος εργασίας\nΠατήστε Α για αιτούμενο και P για πάροχο")
-    dicts={'Email':Email,'Username':Username,'Password':Password,'Eidos_xrhsth':Eidos_xrhsth}
-    Insert_in_Xrhsths(dicts)
+        eidos_xrhsth=input("Συνδεθείτε ως αιτούμενος ή πάροχος εργασίας\nΠατήστε Α για αιτούμενο και P για πάροχο")
+    dicts={"Email":email,"Username":username,"Password":password,"Eidos_xrhsth":eidos_xrhsth}
+    Insert_in_Xrhsths(email,username,password,eidos_xrhsth)
     return None
 
 def CheckPassword(Password):
@@ -34,15 +34,19 @@ def CheckPassword(Password):
     else:
         return False
 
-def Insert_in_Xrhsths(dicts):
-    conn=db.create_connection(database)
-    cur=conn.cursor()
-    columns = ', '.join(dicts.keys())
-    placeholders = ','.join(dicts.values())
-    sql = 'INSERT INTO XRHSTHS ({}) VALUES ({})'.format(columns, placeholders)
-    #values = [int(x) if isinstance(x, bool) else x for x in dicts.values()]
-    cur.execute(sql)
+def Insert_in_Xrhsths(email,username,password,eidos_xrhsth):
+    conn1=db.create_connection(database)
+    cur=conn1.cursor()
+    #columns = ', '.join(dicts.keys())
+    #placeholders = ','.join(dicts.values())
+    #placeholders = ','.join(dicts.values())
+    query = """INSERT INTO XRHSTHS (Email,Username,Password,Eidos_xrhsth) VALUES ('%s','%s','%s','%s')""" % (email,username,password,eidos_xrhsth)
+    #sql = """INSERT INTO XRHSTHS ({}) VALUES ({})""".format(columns, placeholders)
+    cur.execute(query)
     cur.close()
+    conn1.commit()
+    conn1.close()
+    return None
 
 def Check_User_existance_on_Sign_Up(Email):
     conn=db.create_connection(database)
