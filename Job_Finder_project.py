@@ -9,6 +9,11 @@ def Sign_UP():
     while(email==''):
         print("Εισάγετε αποδεκτό Email")
         email=input("Email:")
+    data_email=Check_Email_existance(email)
+    while(len(data_email)>0):
+        print("Φαίνεται πως υπάρχει ήδη λογαριασμός με αυτό το email\nΠαρακαλώ εισάγεται αποδεκτό email")
+        email=input("Email:")
+        data_email=Check_Email_existance(email)
     username=input("Username:")
     while(username==''):
         print("Εισάγετε αποδεκτό Username")
@@ -34,25 +39,26 @@ def CheckPassword(Password):
     else:
         return False
 
+
+
+def Check_Email_existance(email):
+    conn_for_email=db.create_connection(database)
+    cur=conn_for_email.cursor()
+    query="""SELECT Email from XRHSTHS WHERE Email='%s'""" % email
+    cur.execute(query)
+    data=cur.fetchall()
+    return data
+
 def Insert_in_Xrhsths(email,username,password,eidos_xrhsth):
     conn1=db.create_connection(database)
     cur=conn1.cursor()
-    #columns = ', '.join(dicts.keys())
-    #placeholders = ','.join(dicts.values())
-    #placeholders = ','.join(dicts.values())
     query = """INSERT INTO XRHSTHS (Email,Username,Password,Eidos_xrhsth) VALUES ('%s','%s','%s','%s')""" % (email,username,password,eidos_xrhsth)
-    #sql = """INSERT INTO XRHSTHS ({}) VALUES ({})""".format(columns, placeholders)
     cur.execute(query)
     cur.close()
     conn1.commit()
     conn1.close()
     return None
 
-def Check_User_existance_on_Sign_Up(Email):
-    conn=db.create_connection(database)
-    cur=conn.cursor()
-    query="SELECT x.Email FROM XRHSTHS as x WHERE x.Email"
-    return None
 
 
 def SignIn():
