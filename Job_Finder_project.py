@@ -3,6 +3,7 @@ import DB_Project as db
 
 database="DB_project.db"
 
+"""--------------------------- TAKE DATA VALUES FROM USER INPUT ---------------------------"""
 
 def Sign_UP():
     email=input("Email : ")
@@ -67,6 +68,8 @@ def Create_paroxos_profil():
     Insert_in_Profil_paroxou(eponymia,perigrafh,dieythynsh,thlefono,bathmologia)
     return None
 
+"""--------------------------- CHECK FOR REQUIREMENTS ---------------------------"""
+
 def CheckPassword(Password):
     special_characters=re.findall("[!,@,#,$,%,^,&,*,(,)]",Password)
     numbers=re.findall("[1,2,3,4,5,6,7,8,9,0]",Password)
@@ -75,6 +78,20 @@ def CheckPassword(Password):
         return True
     else:
         return False
+
+"""--------------------------- CHECK IN DATABASE ---------------------------"""
+
+def Check_User_existance_on_Sign_Up(email):
+    conn2=db.create_connection(database)
+    cur=conn2.cursor()
+    query="SELECT x.Email FROM XRHSTHS as x WHERE x.Email"
+    return None
+
+def SignIn():
+    print(2)
+    return None
+
+"""--------------------------- INSERT INPUT DATA VALUES INTO TABLES ---------------------------"""
 
 def Insert_in_Xrhsths(email,username,password,eidos_xrhsth):
     conn1=db.create_connection(database)
@@ -106,13 +123,102 @@ def Insert_in_Profil_paroxou(eponymia,perigrafh,dieythynsh,thlefono,bathmologia)
     conn3.close()
     return None
 
-def Check_User_existance_on_Sign_Up(email):
-    conn2=db.create_connection(database)
-    cur=conn2.cursor()
-    query="SELECT x.Email FROM XRHSTHS as x WHERE x.Email"
+def Insert_in_Ekpaideusi_ypopsifiou(bathmos,hmnia_enarksis,hmnia_liksis,bathmida):
+    conn4=db.create_connection(database)
+    cur=conn4.cursor()
+    query = """ INSERT INTO EKPAIDEYSH_YPOPSIFIOY (bathmos,hmnia_enarksis,hmnia_liksis,bathmida) VALUES ('%s','%s','%s','%s')""" % (bathmos,hmnia_enarksis,hmnia_liksis,bathmida)
+    cur.execute(query)
+    cur.close()
+    conn4.commit()
+    conn4.close()
     return None
 
+def Insert_in_Proyphresia_ypospsifiou(titlos,paroxos,hmnia_enarksis,hmnia_liksis):
+    conn5=db.create_connection(database)
+    cur=conn5.cursor()
+    query = """ INSERT INTO PROYPHRESIA_YPOPSIFIOY (titlos,paroxos,hmnia_enarksis,hmnia_liksis) VALUES ('%s','%s','%s','%s')""" % (titlos,paroxos,hmnia_enarksis,hmnia_liksis)
+    cur.execute(query)
+    cur.close()
+    conn5.commit()
+    conn5.close()
+    return None
 
-def SignIn():
-    print(2)
+def Insert_in_Ikanothta_ypopsifiou(titlos_kathgorias,titlos_ikanothtas,epipedo):
+    conn6=db.create_connection(database)
+    cur=conn6.cursor()
+    query = """ INSERT INTO IKANOTITA_YPOPSIFIOY (titlos_kathgorias,titlos_ikanothtas,epipedo) VALUES ('%s','%s','%s')""" % (titlos_kathgorias,titlos_ikanothtas,epipedo)
+    cur.execute(query)
+    cur.close()
+    conn6.commit()
+    conn6.close()
+    return None
+
+def Insert_in_Aggelia_erg(topothesia,wrario,misthos,perigrafh,typos_ergasia,titlos,hmeromhnia_dhmosieusis):
+    conn7=db.create_connection(database)
+    cur=conn7.cursor()
+    query = """ INSERT INTO AGGELIA_ERGASIAS (topothesia,wrario,misthos,perigrafh,typos_ergasia,titlos,hmeromhnia_dhmosieusis) VALUES ('%s','%s','%s','%s','%s','%s','%s')""" % (topothesia,wrario,misthos,perigrafh,typos_ergasia,titlos,hmeromhnia_dhmosieusis)
+    cur.execute(query)
+    cur.close()
+    conn7.commit()
+    conn7.close()
+    return None
+
+def Insert_in_Apaitoumeni_ekpaideusi(bathmida,bathmos):
+    conn8=db.create_connection(database)
+    cur=conn8.cursor()
+    query = """ INSERT INTO APAITOUMENI_EKPAIDEYSI (bathmida,bathmos) VALUES ('%s','%s')""" % (bathmida,bathmos)
+    cur.execute(query)
+    cur.close()
+    conn8.commit()
+    conn8.close()
+    return None
+
+def Insert_in_Apaitoumeni_proyphresia(titlos,diarkeia):
+    conn9=db.create_connection(database)
+    cur=conn9.cursor()
+    query = """ INSERT INTO APAITOUMENI_PROYPHRESIA (titlos,diarkeia) VALUES ('%s','%s')""" % (titlos,diarkeia)
+    cur.execute(query)
+    cur.close()
+    conn9.commit()
+    conn9.close()
+    return None
+
+def Insert_in_Apaitoumeni_ikanothta(epipedo):
+    conn10=db.create_connection(database)
+    cur=conn10.cursor()
+    query = """ INSERT INTO APAITOUMENI_IKANOTHTA (titlos,diarkeia) VALUES ('%s')""" % (epipedo)
+    cur.execute(query)
+    cur.close()
+    conn10.commit()
+    conn10.close()
+    return None
+
+def Insert_in_Aithsh(hmeromhnia_aithshs):
+    conn11=db.create_connection(database)
+    cur=conn11.cursor()
+    query = """ INSERT INTO AITHSH (hmeromhnia_aithshs) VALUES ('%s')""" % (hmeromhnia_aithshs)
+    cur.execute(query)
+    cur.close()
+    conn11.commit()
+    conn11.close()
+    return None
+
+def Insert_in_Synenteyksi(heromhnia_synenteyksis):
+    conn12=db.create_connection(database)
+    cur=conn12.cursor()
+    query = """ INSERT INTO SYNTEYKSI (heromhnia_synenteyksis) VALUES ('%s')""" % (heromhnia_synenteyksis)
+    cur.execute(query)
+    cur.close()
+    conn12.commit()
+    conn12.close()
+    return None
+
+def Insert_in_Aksiologhsh(bathmologia,hmeromhnia_aksiologishs,perilipsi):
+    conn13=db.create_connection(database)
+    cur=conn13.cursor()
+    query = """ INSERT INTO AKSIOLOGHSH (bathmologia,hmeromhnia_aksiologishs,perilipsi) VALUES ('%s','%s','%s')""" % (bathmologia,hmeromhnia_aksiologishs,perilipsi)
+    cur.execute(query)
+    cur.close()
+    conn13.commit()
+    conn13.close()
     return None

@@ -61,10 +61,10 @@ def tables():
 
     Tables[3]="""CREATE TABLE IF NOT EXISTS EKPAIDEYSH_YPOPSIFIOY(
                                 ID_aitoumenou INTEGER NOT NULL,
-                                Bathmos INTEGER,
-                                Hmnia_enarksis DATE NOT NULL DEFAULT '0000-00-00',
-                                Hmnia_liksis DATE NOT NULL DEFAULT '0000-00-00',
-                                Bathmida INTEGER,
+                                bathmos INTEGER,
+                                hmnia_enarksis DATE NOT NULL DEFAULT '0000-00-00',
+                                hmnia_liksis DATE NOT NULL DEFAULT '0000-00-00',
+                                bathmida INTEGER,
                                 ID_pediou INTEGER DEFAULT NULL,
                                 PRIMARY KEY(ID_aitoumenou),
                                 FOREIGN KEY(ID_aitoumenou) REFERENCES PROFIL_AITOUMENOY(ID_aitoumenou)
@@ -83,10 +83,10 @@ def tables():
 
     Tables[5]="""CREATE TABLE IF NOT EXISTS PROYPHRESIA_YPOPSIFIOY(
                                 ID_aitoumenou INTEGER NOT NULL,
-                                Titlos VARCHAR(100) NOT NULL,
-                                Paroxos VARCHAR(100) NOT NULL,
-                                Hmnia_enarksis DATE NOT NULL DEFAULT '0000-00-00',
-                                Hmnia_liskis DATE DEFAULT NULL,
+                                titlos VARCHAR(100) NOT NULL,
+                                paroxos VARCHAR(100) NOT NULL,
+                                hmnia_enarksis DATE NOT NULL DEFAULT '0000-00-00',
+                                hmnia_liskis DATE DEFAULT NULL,
                                 PRIMARY KEY(ID_aitoumenou,Hmnia_enarksis),
                                 FOREIGN KEY(ID_aitoumenou) REFERENCES PROFIL_AITOUMENOY(ID_aitoumenou)
                                 ON UPDATE NO ACTION
@@ -95,9 +95,9 @@ def tables():
 
     Tables[6]="""CREATE TABLE IF NOT EXISTS IKANOTITA_YPOPSIFIOY(
                                 ID_aitoumenou INTEGER NOT NULL,
-                                Titlos_kathgorias VARCHAR(50) NOT NULL,
-                                Titlos_ikanothtas VARCHAR(50) NOT NULL,
-                                Epipedo INTEGER NOT NULL DEFAULT 0,
+                                titlos_kathgorias VARCHAR(50) NOT NULL,
+                                titlos_ikanothtas VARCHAR(50) NOT NULL,
+                                epipedo INTEGER NOT NULL DEFAULT 0,
                                 ID_kathgorias INTEGER NOT NULL,
                                 PRIMARY KEY(ID_aitoumenou,ID_kathgorias,Titlos_ikanothtas),
                                 FOREIGN KEY(ID_aitoumenou) REFERENCES PROFIL_AITOUMENOY(ID_aitoumenou)
@@ -118,13 +118,13 @@ def tables():
     Tables[8]="""CREATE TABLE IF NOT EXISTS AGGELIA_ERGASIAS(
                                 ID_aggelias INTEGER NOT NULL,
                                 ID_paroxou INTEGER NOT NULL,
-                                Topothesia VARCHAR(50) NOT NULL,
-                                Wrario VARCHAR(30),
-                                Misthos INTEGER,
-                                Perigrafi TEXT,
-                                Typos_ergasias VARCHAR(50),
-                                Titlos VARCHAR(100),
-                                Hmeromhnia_dhmosieusis DATE NOT NULL,
+                                topothesia VARCHAR(50) NOT NULL,
+                                wrario VARCHAR(30),
+                                misthos INTEGER,
+                                perigrafi TEXT,
+                                typos_ergasias VARCHAR(50),
+                                titlos VARCHAR(100),
+                                hmeromhnia_dhmosieusis DATE NOT NULL,
                                 PRIMARY KEY(ID_aggelias,ID_paroxou),
                                 FOREIGN KEY(ID_paroxou) REFERENCES PROFIL_PAROXOU(ID_paroxou)
                                 ON UPDATE NO ACTION
@@ -135,7 +135,8 @@ def tables():
                                 ID_aggelias INTEGER NOT NULL,
                                 ID_paroxou INTEGER NOT NULL,
                                 ID_pediou INTEGER,
-                                Bathmos VARCHAR(20),
+                                bathmida VARCHAR(20),
+                                bathmos VARCHAR(20),
                                 PRIMARY KEY(ID_aggelias,ID_paroxou),
                                 FOREIGN KEY(ID_aggelias) REFERENCES AGGELIA_ERGASIAS(ID_aggelias)
                                 ON UPDATE CASCADE
@@ -184,7 +185,7 @@ def tables():
                                     ID_aithshs INTEGER NOT NULL,
                                     ID_paroxou INTEGER NOT NULL,
                                     ID_aggelias INTEGER NOT NULL,
-                                    Hmeromhnia_aithshs DATE NOT NULL,
+                                    hmeromhnia_aithshs DATE NOT NULL,
                                     PRIMARY KEY(ID_aithshs),
                                     FOREIGN KEY(ID_aitoumenou) REFERENCES PROFIL_AITOUMENOU(ID_aitoumenou)
                                     ON UPDATE NO ACTION
@@ -199,7 +200,7 @@ def tables():
 
     Tables[13]="""CREATE TABLE IF NOT EXISTS SYNTEYKSI(
                                     ID_aithshs INTEGER NOT NULL,
-                                    Hmeromhnia_synenteyksis DATE NOT NULL DEFAULT '0000-00-00',
+                                    heromhnia_synenteyksis DATE NOT NULL DEFAULT '0000-00-00',
                                     PRIMARY KEY(ID_aithshs),
                                     FOREIGN KEY(ID_aithshs) REFERENCES AITHSH(ID_aithshs)
                                     ON UPDATE NO ACTION
@@ -210,9 +211,9 @@ def tables():
                                     ID_aksiologhshs INTEGER NOT NULL,
                                     ID_paroxou INTEGER NOT NULL,
                                     ID_aitoumenou INTEGER NOT NULL,
-                                    Bathmologia INTEGER NOT NULL,
-                                    Hmeromhnia_aksiologishs DATE NOT NULL DEFAULT '0000-00-00',
-                                    Perilipsi text,
+                                    bathmologia INTEGER NOT NULL,
+                                    hmeromhnia_aksiologishs DATE NOT NULL DEFAULT '0000-00-00',
+                                    perilipsi text,
                                     PRIMARY KEY(ID_aksiologhshs),
                                     FOREIGN KEY(ID_paroxou) REFERENCES PROFIL_PAROXOU(ID_paroxou)
                                     ON UPDATE NO ACTION
