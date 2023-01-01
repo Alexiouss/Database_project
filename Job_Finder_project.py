@@ -5,6 +5,9 @@ database="DB_project.db"
 
 """--------------------------- TAKE DATA VALUES FROM USER INPUT ---------------------------"""
 
+""" ΑΥΤΑ ΤΑ ΕΚΑΝΑ ΓΙΑ ΤΑ ΙΝΠΟΥΤΣ ΠΟΥ ΠΡΕΠΕΙ ΝΑ ΔΙΝΕΙ Ο ΧΡΗΣΤΗΣ ΑΣΧΕΤΑ ΜΕ ΤΑ ΦΟΡΕΙΝ 
+ΠΟΥ ΘΑ ΠΡΕΠΕΙ ΝΑ ΠΕΡΑΣΟΥΜΕ ΕΠΙΣΗΣ"""
+
 def Sign_UP():
     email=input("Email : ")
     while(email==''):
@@ -25,6 +28,32 @@ def Sign_UP():
     Insert_in_Xrhsths(email,username,password,eidos_xrhsth)
     if(eidos_xrhsth=="A"):
         Create_ait_profil()
+        print("\nΓια να εισάγετε εκπαίδευση πατήστε 'Ε' \nΓια να εισάγετε προυπηρεσία πατήστε 'Π'\nΓια να εισάγετε ικανότητα πατήστε 'Ι'\n")
+        eisagwgh_empeirias=input("Επιλογή : \n")
+        if(eisagwgh_empeirias=='Ε'):
+            Create_ekpaideusi_ypopsifiou()
+            print("\nΓια να εισάγετε προυπηρεσία πατήστε 'Π'\nΓια να εισάγετε ικανότητα πατήστε 'Ι'\n")
+            eisagwgh_empeirias=input("Επιλογή : \n")
+            if(eisagwgh_empeirias=='Π'):
+                Create_proyphresia_ypospsifiou()
+            elif(eisagwgh_empeirias=='Ι'):
+                Create_ikanothta_ypopsifiou()
+        elif(eisagwgh_empeirias=='Π'):
+            Create_proyphresia_ypospsifiou()
+            print("\nΓια να εισάγετε εκπαίδευση πατήστε 'Ε'\nΓια να εισάγετε ικανότητα πατήστε 'Ι'\n")
+            eisagwgh_empeirias=input("Επιλογή : \n")
+            if(eisagwgh_empeirias=='Ε'):
+                Create_ekpaideusi_ypopsifiou()
+            elif(eisagwgh_empeirias=='Ι'):
+                Create_ikanothta_ypopsifiou()
+        elif(eisagwgh_empeirias=='Ι'):
+            Create_ikanothta_ypopsifiou()
+            print("\nΓια να εισάγετε εκπαίδευση πατήστε 'Ε'\nΓια να εισάγετε προυπηρεσία πατήστε 'Π'\n")
+            eisagwgh_empeirias=input("Επιλογή : \n")
+            if(eisagwgh_empeirias=='Ε'):
+                Create_ekpaideusi_ypopsifiou()
+            elif(eisagwgh_empeirias=='Π'):
+                Create_proyphresia_ypospsifiou()
     else:
         Create_paroxos_profil()
     return None
@@ -64,8 +93,125 @@ def Create_paroxos_profil():
     while(thlefono==''):
         print("Εισάγετε αποδεκτό Τηλέφωνο : ")
         thlefono=input("Τηλέφωνο : ")
+    Insert_in_Profil_paroxou(eponymia,perigrafh,dieythynsh,thlefono)
+    return None
+
+def Create_ekpaideusi_ypopsifiou():
+    bathmos=input("Βαθμός : ")
+    hmnia_enarksis=input("Ημερομηνία έναρξης : ")
+    while(hmnia_enarksis==''):
+        print("Εισάγετε αποδεκτή Ημερομηνία έναρξης : ")
+        hmnia_enarksis=input("Ημερομηνία έναρξης : ")
+    hmnia_liksis=input("Ημερομηνία λήξης : ")
+    while(hmnia_liksis==''):
+        print("Εισάγετε αποδεκτή Ημερομηνία λήξης : ")
+        hmnia_liksis=input("Ημερομηνία λήξης : ")
+    bathmida=input("Βαθμίδα : ")
+    while(bathmida==''):
+        print("Εισάγετε αποδεκτή βαθμίδα : ")
+        bathmida=input("Βαθμίδα : ")
+    Insert_in_Ekpaideusi_ypopsifiou(bathmos,hmnia_enarksis,hmnia_liksis,bathmida)
+    return None
+
+def Create_proyphresia_ypospsifiou():
+    titlos=input("Τίτλος : ")
+    while(titlos==''):
+        print("Εισάγετε αποδεκτό Τίτλο : ")
+        titlos=input("Τίτλος : ")
+    paroxos=input("Πάροχος : ")
+    while(paroxos==''):
+        print("Εισάγετε αποδεκτό Πάροχο : ")
+        paroxos=input("Πάροχο : ")
+    hmnia_enarksis=input("Ημερομηνία έναρξης : ")
+    while(hmnia_enarksis==''):
+        print("Εισάγετε αποδεκτή Ημερομηνία έναρξης : ")
+        hmnia_enarksis=input("Ημερομηνία έναρξης : ")
+    hmnia_liksis=input("Ημερομηνία λήξης : ")
+    while(hmnia_liksis==''):
+        print("Εισάγετε αποδεκτή Ημερομηνία λήξης : ")
+        hmnia_liksis=input("Ημερομηνία λήξης : ")
+    Insert_in_Proyphresia_ypospsifiou(titlos,paroxos,hmnia_enarksis,hmnia_liksis)
+    return None
+
+def Create_ikanothta_ypopsifiou():
+    titlos_kathgorias=input("Τίτλος Κατηγορίας : ")
+    while(titlos_kathgorias==''):
+        print("Εισάγετε αποδεκτό Τίτλο Κατηγορίας : ")
+        titlos_kathgorias=input("Τίτλος Κατηγορίας : ")
+    titlos_ikanothtas=input("Τίτλος Ικανότητας : ")
+    while(titlos_ikanothtas==''):
+        print("Εισάγετε αποδεκτό Τίτλο Ικανότητας : ")
+        titlos_ikanothtas=input("Τίτλος Ικανότητας : ")
+    epipedo=input("Επίπεδο : ")
+    while(epipedo==''):
+        print("Εισάγετε αποδεκτό Επίπεδο : ")
+        epipedo=input("Επίπεδο : ")
+    Insert_in_Ikanothta_ypopsifiou(titlos_kathgorias,titlos_ikanothtas,epipedo)
+    return None
+
+def Create_aggelia_erg():
+    topothesia=input("Τοποθεσία : ")
+    while(topothesia==''):
+        print("Εισάγετε αποδεκτή Τοποθεσία : ")
+        topothesia=input("Τοποθεσία : ")
+    wrario=input("Ωράριο : ")
+    misthos=input("Μισθός : ")
+    perigrafi=input("Περιγραφή : ")
+    typos_ergasias=input("Τύπος Εργασίας : ")
+    titlos=input("Τίτλος : ")
+    Insert_in_Aggelia_erg(topothesia,wrario,misthos,perigrafi,typos_ergasias,titlos)
+    return None
+
+def Create_apaitoumeni_ekpaideusi():
+    bathmida=input("Βαθμίδα : ")
+    bathmos=input("Βαθμός : ")
+    Insert_in_Apaitoumeni_ekpaideusi(bathmida,bathmos)
+    return None
+
+def Create_apaitoumeni_proyphresia():
+    titlos=input("Τίτλος : ")
+    while(titlos==''):
+        print("Εισάγετε αποδεκτό Τίτλο : ")
+        titlos=input("Τίτλος : ")
+    diarkeia=input("Διάρκεια : ")
+    while(diarkeia==''):
+        print("Εισάγετε αποδεκτή Διάρκεια : ")
+        diarkeia=input("Διάρκεια : ")
+    Insert_in_Apaitoumeni_proyphresia(titlos,diarkeia)
+    return None
+
+def Create_apaitoumeni_ikanothta():
+    titlos_ikanothtas=input("Τίτλος Ικανότητας : ")
+    while(titlos_ikanothtas==''):
+        print("Εισάγετε αποδεκτό Τίτλο Ικανότητας : ")
+        titlos_ikanothtas=input("Τίτλος Ικανότητας : ")
+    epipedo=input("Επίπεδο : ")
+    while(epipedo==''):
+        print("Εισάγετε αποδεκτό Επίπεδο : ")
+        epipedo=input("Επίπεδο : ")
+    Insert_in_Apaitoumeni_ikanothta(titlos_ikanothtas,epipedo)
+    return None
+
+def Create_aithsh():
+    """ΔΕΝ ΕΧΩ ΚΑΤΑΛΑΒΕΙ ΠΩΣ ΘΑ ΤΟ ΚΑΝΟΥΜΕ ΑΥΤΟ. ΘΑ ΕΛΕΓΑ ΟΤΑΝ ΕΜΦΑΝΙΖΕΙ ΑΓΓΕΛΙΑ ΣΤΟ 
+    ΧΡΗΣΤΗ ΝΑ ΤΟΥ ΛΕΜΕ ΘΕΛΤΕ ΝΑ ΚΑΝΕΤΕ ΑΙΤΗΣΗ Ν/Ο; ΚΑΙ ΑΝΑΛΟΓΩΣ ΝΑ ΠΕΡΝΑΜΕ ΤΑ ΣΤΟΙΧΕΙΑ ΣΤΟΝ ΠΙΝΑΚΑ"""
+    return None
+
+def Create_synenteyksi():
+    """ΕΠΙΣΗΣ ΔΕΝ ΕΧΩ ΚΑΤΑΛΑΒΕΙ ΥΠΟΘΕΤΩ ΟΤΙ ΘΑ ΠΡΕΠΕΙ ΠΑΛΙ ΝΑ ΡΩΤΑΜΕ ΤΟΝ ΠΑΡΟΧΟ ?ΚΑΠΟΥ?
+    ΑΝ ΔΕΧΕΤΑΙ ΤΗΝ ΑΙΤΗΣΗ ?????"""
+    return None
+
+def Create_aksiologhsh():
     bathmologia=input("Βαθμολογία : ")
-    Insert_in_Profil_paroxou(eponymia,perigrafh,dieythynsh,thlefono,bathmologia)
+    while(bathmologia==''):
+        print("Εισάγετε αποδεκτή Βαθμολογία : ")
+        bathmologia=input("Βαθμολογία : ")
+    perilipsi=input("Περίληψη : ")
+    while(perilipsi==''):
+        print("Εισάγετε αποδεκτή Περίληψη : ")
+        perilipsi=input("Περίληψη : ")
+    Insert_in_Profil_paroxou(bathmologia,perilipsi)
     return None
 
 """--------------------------- CHECK FOR REQUIREMENTS ---------------------------"""
@@ -113,10 +259,10 @@ def Insert_in_Profil_aitoumenou(onoma,eponymo,hlikia,fylo):
     conn2.close()
     return None
 
-def Insert_in_Profil_paroxou(eponymia,perigrafh,dieythynsh,thlefono,bathmologia):
+def Insert_in_Profil_paroxou(eponymia,perigrafh,dieythynsh,thlefono):
     conn3=db.create_connection(database)
     cur=conn3.cursor()
-    query = """ INSERT INTO PROFIL_PAROXOU (eponymia,perigrafh,dieythynsh,thlefono,bathmologia) VALUES ('%s','%s','%s','%s','%s')""" % (eponymia,perigrafh,dieythynsh,thlefono,bathmologia)
+    query = """ INSERT INTO PROFIL_PAROXOU (eponymia,perigrafh,dieythynsh,thlefono) VALUES ('%s','%s','%s','%s')""" % (eponymia,perigrafh,dieythynsh,thlefono)
     cur.execute(query)
     cur.close()
     conn3.commit()
@@ -153,10 +299,10 @@ def Insert_in_Ikanothta_ypopsifiou(titlos_kathgorias,titlos_ikanothtas,epipedo):
     conn6.close()
     return None
 
-def Insert_in_Aggelia_erg(topothesia,wrario,misthos,perigrafh,typos_ergasia,titlos,hmeromhnia_dhmosieusis):
+def Insert_in_Aggelia_erg(topothesia,wrario,misthos,perigrafi,typos_ergasias,titlos):
     conn7=db.create_connection(database)
     cur=conn7.cursor()
-    query = """ INSERT INTO AGGELIA_ERGASIAS (topothesia,wrario,misthos,perigrafh,typos_ergasia,titlos,hmeromhnia_dhmosieusis) VALUES ('%s','%s','%s','%s','%s','%s','%s')""" % (topothesia,wrario,misthos,perigrafh,typos_ergasia,titlos,hmeromhnia_dhmosieusis)
+    query = """ INSERT INTO AGGELIA_ERGASIAS (topothesia,wrario,misthos,perigrafi,typos_ergasias,titlos) VALUES ('%s','%s','%s','%s','%s','%s')""" % (topothesia,wrario,misthos,perigrafi,typos_ergasias,titlos)
     cur.execute(query)
     cur.close()
     conn7.commit()
@@ -183,10 +329,10 @@ def Insert_in_Apaitoumeni_proyphresia(titlos,diarkeia):
     conn9.close()
     return None
 
-def Insert_in_Apaitoumeni_ikanothta(epipedo):
+def Insert_in_Apaitoumeni_ikanothta(titlos_ikanothtas,epipedo):
     conn10=db.create_connection(database)
     cur=conn10.cursor()
-    query = """ INSERT INTO APAITOUMENI_IKANOTHTA (titlos,diarkeia) VALUES ('%s')""" % (epipedo)
+    query = """ INSERT INTO APAITOUMENI_IKANOTHTA (titlos_ikanothtas,epipedo) VALUES ('%s','%s')""" % (titlos_ikanothtas,epipedo)
     cur.execute(query)
     cur.close()
     conn10.commit()
@@ -213,10 +359,10 @@ def Insert_in_Synenteyksi(heromhnia_synenteyksis):
     conn12.close()
     return None
 
-def Insert_in_Aksiologhsh(bathmologia,hmeromhnia_aksiologishs,perilipsi):
+def Insert_in_Aksiologhsh(bathmologia,perilipsi):
     conn13=db.create_connection(database)
     cur=conn13.cursor()
-    query = """ INSERT INTO AKSIOLOGHSH (bathmologia,hmeromhnia_aksiologishs,perilipsi) VALUES ('%s','%s','%s')""" % (bathmologia,hmeromhnia_aksiologishs,perilipsi)
+    query = """ INSERT INTO AKSIOLOGHSH (bathmologia,hmeromhnia_aksiologishs,perilipsi) VALUES ('%s','%s')""" % (bathmologia,perilipsi)
     cur.execute(query)
     cur.close()
     conn13.commit()

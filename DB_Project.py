@@ -152,8 +152,8 @@ def tables():
     Tables[10]="""CREATE TABLE IF NOT EXISTS APAITOUMENI_PROYPHRESIA(
                                 ID_aggelias INTEGER NOT NULL,
                                 ID_paroxou INTEGER NOT NULL,
-                                Titlos VARCHAR(50) NOT NULL,
-                                Diarkeia INTEGER DEFAULT NULL,
+                                titlos VARCHAR(50) NOT NULL,
+                                diarkeia INTEGER DEFAULT NULL,
                                 PRIMARY KEY(ID_aggelias,ID_paroxou),
                                 FOREIGN KEY(ID_aggelias) REFERENCES AGGELIA_ERGASIAS(ID_aggelias)
                                 ON UPDATE CASCADE
@@ -166,7 +166,8 @@ def tables():
     Tables[11]="""CREATE TABLE IF NOT EXISTS APAITOUMENI_IKANOTHTA(
                                 ID_aggelias INTEGER NOT NULL,
                                 ID_paroxou INTEGER NOT NULL,
-                                Epipedo VARCHAR(20) NOT NULL,
+                                titlos_ikanothtas VARCHAR(50) NOT NULL,
+                                epipedo VARCHAR(20) NOT NULL,
                                 ID_kathgorias INTEGER NOT NULL,
                                 PRIMARY KEY(ID_aggelias,ID_paroxou),
                                 FOREIGN KEY(ID_aggelias) REFERENCES AGGELIA_ERGASIAS(ID_aggelias)
