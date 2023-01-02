@@ -11,13 +11,22 @@ def Sign_UP():
         email=input("Email:")
     data_email=Check_Email_existance(email)
     while(len(data_email)>0):
-        print("Φαίνεται πως υπάρχει ήδη λογαριασμός με αυτό το email\nΠαρακαλώ εισάγεται αποδεκτό email")
-        email=input("Email:")
-        data_email=Check_Email_existance(email)
+        print("Φαίνεται πως υπάρχει ήδη λογαριασμός με αυτό το email\nΘέλετε να κάνετε Sign in;")
+        signin=int(input("Πατήστε 1 για να εισάγετε άλλο mail ή 2 για να συνεχίσετε με Sign In:"))
+        if(signin==1):
+            email=input("Email:")
+            data_email=Check_Email_existance(email)
+        elif(signin==2):
+            SignIn()
     username=input("Username:")
     while(username==''):
         print("Εισάγετε αποδεκτό Username")
         username=input("Username:")
+    data_username=Check_Username_existance(username)
+    while(len(data_username)>0):
+        print("Υπάρχει ήδη λογαριασμός με αυτό το όνομα χρήστη\nΠαρακαλώ εισάγετε νέο όνομα χρήστη")
+        username=input("Username:")
+        data_username=Check_Username_existance(username)
     password=input("Κωδικός:")
     while(password=='' or CheckPassword(password)==False):
         print("Ο Κωδικός πρέπει να περιέχει τουλάχιστον έναν αριθμό, έναν ειδικό χαρακτήρα και να είναι από 8 έως 16 χαρακτήρες")
@@ -26,7 +35,6 @@ def Sign_UP():
     while(eidos_xrhsth=='' or eidos_xrhsth not in ["A","P"]):
         print("Please insert the correct information")
         eidos_xrhsth=input("Συνδεθείτε ως αιτούμενος ή πάροχος εργασίας\nΠατήστε Α για αιτούμενο και P για πάροχο")
-    dicts={"Email":email,"Username":username,"Password":password,"Eidos_xrhsth":eidos_xrhsth}
     Insert_in_Xrhsths(email,username,password,eidos_xrhsth)
     return None
 
@@ -40,11 +48,18 @@ def CheckPassword(Password):
         return False
 
 
-
 def Check_Email_existance(email):
     conn_for_email=db.create_connection(database)
     cur=conn_for_email.cursor()
     query="""SELECT Email from XRHSTHS WHERE Email='%s'""" % email
+    cur.execute(query)
+    data=cur.fetchall()
+    return data
+
+def Check_Username_existance(Username):
+    conn_for_email=db.create_connection(database)
+    cur=conn_for_email.cursor()
+    query="""SELECT Username from XRHSTHS WHERE Username='%s'""" % Username
     cur.execute(query)
     data=cur.fetchall()
     return data
