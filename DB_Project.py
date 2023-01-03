@@ -61,12 +61,12 @@ def tables():
 
     Tables[3]="""CREATE TABLE IF NOT EXISTS EKPAIDEYSH_YPOPSIFIOY(
                                 ID_aitoumenou INTEGER NOT NULL,
-                                Bathmos INTEGER,
+                                Bathmos INTEGER DEFAULT NULL,
                                 Hmnia_enarksis DATE NOT NULL DEFAULT '0000-00-00',
-                                Hmnia_liksis DATE NOT NULL DEFAULT '0000-00-00',
-                                Bathmida INTEGER,
-                                ID_pediou INTEGER DEFAULT NULL,
-                                PRIMARY KEY(ID_aitoumenou),
+                                Hmnia_liksis DATE DEFAULT '0000-00-00',
+                                Bathmida INTEGER DEFAULT NULL,
+                                ID_pediou INTEGER DEFAULT 0,
+                                PRIMARY KEY(ID_aitoumenou,Hmnia_enarksis),
                                 FOREIGN KEY(ID_aitoumenou) REFERENCES PROFIL_AITOUMENOY(ID_aitoumenou)
                                 ON UPDATE NO ACTION
                                 ON DELETE CASCADE,
@@ -95,11 +95,9 @@ def tables():
 
     Tables[6]="""CREATE TABLE IF NOT EXISTS IKANOTITA_YPOPSIFIOY(
                                 ID_aitoumenou INTEGER NOT NULL,
-                                Titlos_kathgorias VARCHAR(50) NOT NULL,
-                                Titlos_ikanothtas VARCHAR(50) NOT NULL,
                                 Epipedo INTEGER NOT NULL DEFAULT 0,
                                 ID_kathgorias INTEGER NOT NULL,
-                                PRIMARY KEY(ID_aitoumenou,ID_kathgorias,Titlos_ikanothtas),
+                                PRIMARY KEY(ID_aitoumenou,ID_kathgorias),
                                 FOREIGN KEY(ID_aitoumenou) REFERENCES PROFIL_AITOUMENOY(ID_aitoumenou)
                                 ON UPDATE NO ACTION
                                 ON DELETE CASCADE,
@@ -111,7 +109,7 @@ def tables():
 
     Tables[7]="""CREATE TABLE IF NOT EXISTS KATHGORIA_IKANOTITAS(
                                 ID_kathgorias INTEGER NOT NULL,
-                                Titlos VARCHAR(50) UNIQUE,
+                                Titlos VARCHAR(50),
                                 PRIMARY KEY(ID_kathgorias)
                                 );"""
 
@@ -223,28 +221,6 @@ def tables():
                                     );"""
     
     return Tables
-
-def main():
-    database="DB_project.db"
-    sql_create_tables=tables()
-    conn=create_connection(database)
-    for i in range(0,NumofTables):
-        if conn is not None:
-            create_table(conn,sql_create_tables[i])
-        else:
-            print("ERROR ERROR ERROR")
-    in_pedio_spoudon(conn)
-    in_kathgoria(conn)
-
-    print("-----Welcome to Job_Finder-----Please create account if you dont have one\nAlready have an account?\nPress Sign in to continue\n")
-    print("Press 1 for Sign up or 2 for Sign in")
-    signing=int(input())
-    if(signing==1):
-        jf.Sign_UP()
-    elif(signing==2):
-        jf.SignIn()
-    conn.commit()
-    conn.close()
 
 def in_pedio_spoudon(conn):
     cur= conn.cursor()
@@ -475,22 +451,45 @@ def in_pedio_spoudon(conn):
     cur.close()
     return None
 
-def in_kathgoria(conn):
-    cur= conn.cursor()
-    insertion2="""INSERT INTO KATHGORIA_IKANOTITAS
-            (Titlos)
-            VALUES ('ΔΗΜΙΟΥΡΓΙΚΟΤΗΤΑ'),
-            ('ΔΙΔΑΣΚΑΛΙΑ'),
-            ('ΕΠΙΚΟΙΝΩΝΙΑΝΚΕΣ ΔΕΞΙΟΤΗΤΕΣ'),
-            ('ΕΠΙΧΕΙΡΗΜΑΤΙΚΟΤΗΤΑ'),
-            ('ΞΕΝΕΣ ΓΛΩΣΣΕΣ'),
-            ('ΟΜΑΔΙΚΗ ΕΡΓΑΣΙΑ'),
-            ('ΠΡΟΓΡΑΜΜΑΤΙΣΜΟΣ'),
-            ('ΣΧΕΔΙΟ')"""
-    cur.execute(insertion2)
-    cur.close()
-    return None
+
+def main():
+    database="DB_project.db"
+    sql_create_tables=tables()
+    conn=create_connection(database)
+    conn.execute("PRAGMA foreign_keys = ON;")
+    for i in range(0,NumofTables):
+        if conn is not None:
+            create_table(conn,sql_create_tables[i])
+        else:
+            print("ERROR ERROR ERROR")
+    try:
+        in_pedio_spoudon(conn)
+    except:
+        print("Data already inserted")
+    conn.commit()
+    print("-----Welcome to Job_Finder-----\nPlease create an account if you dont have one\nAlready have an account?\nPress Sign in to continue\n")
+    print("Press 1 for Sign up or 2 for Sign in")
+    signing=int(input())
+    if(signing==1):
+        data=jf.SignUP().Sign_UP()
+        
+        print("Ας ξεκινήσουμε με την δημιουργία του προφίλ σας")
+
+        if data["Eidos_xrhsth"]=='A':
+           jf.Profile_Creation().Create_ait_profil(data["Email"])
+           jf.User_skills_insertion().Create_education(jf.User_id_assignement(data["Email"]))
+        elif data["Eidos_xrhsth"]=='P':
+            jf.Profile_Creation().Create_paroxos_profil(data["Email"])
+    
+    elif(signing==2):
+        email=input("Email:")
+        password=input("password:")
+        user=jf.SignIn().Sign_In(email,password)
+    else:
+        jf.User_skills_insertion().Create_education()
+    '''-----------Μετά το sign in ή μετά από όλη την διαδικασία δημιουργίας προφίλ αρχίζουμε την αναζήτηση την αίτηση-----------'''
+    conn.commit()
+    conn.close()
 
 if __name__=="__main__":
     main()
-
