@@ -96,10 +96,10 @@ def tables():
                                 ON UPDATE CASCADE
                                 ON DELETE NO ACTION
                                 );"""
-
+    
     Tables[6]="""CREATE TABLE IF NOT EXISTS KATHGORIA_ERGASIAS(
                                     ID_kathgorias INTEGER NOT NULL,
-                                    Titlos VARCHAR(50) NOT NULL UNIQUE,
+                                    Titlos VARCHAR(100) NOT NULL UNIQUE,
                                     PRIMARY KEY(ID_kathgorias)
                                     );"""
 
@@ -116,12 +116,12 @@ def tables():
                                 ON DELETE NO ACTION
                                 );
                                 """
-
+    
     Tables[8]="""CREATE TABLE IF NOT EXISTS IKANOTHTA(
                                     ID_skill INTEGER NOT NULL,
                                     Onoma VARCHAR(50) NOT NULL,
                                     Kathgoria VARCHAR(20) NOT NULL,
-                                    PRIMARY KEY(ID_skill),
+                                    PRIMARY KEY(ID_skill)
                                     );"""
 
     Tables[9]="""CREATE TABLE IF NOT EXISTS AGGELIA_ERGASIAS(
@@ -159,6 +159,7 @@ def tables():
                                 ON UPDATE CASCADE
                                 ON DELETE NO ACTION
                                 );"""
+    
 
     Tables[11]="""CREATE TABLE IF NOT EXISTS APAITEI_IKANOTHTA(
                                 ID_aggelias INTEGER NOT NULL,
@@ -176,7 +177,7 @@ def tables():
                                 ON UPDATE CASCADE
                                 ON DELETE NO ACTION
                                 );"""
-
+    
     Tables[12]="""CREATE TABLE IF NOT EXISTS SYNTEYKSI(
                                     ID_aithshs INTEGER NOT NULL,
                                     Hmeromhnia_synenteyksis DATE NOT NULL DEFAULT '0000-00-00',
@@ -185,7 +186,7 @@ def tables():
                                     ON UPDATE NO ACTION
                                     ON DELETE NO ACTION
                                     );"""
-
+    
     Tables[13]="""CREATE TABLE IF NOT EXISTS AITHSH(
                                     ID_aitoumenou INTEGER NOT NULL,
                                     ID_aithshs INTEGER NOT NULL,
@@ -203,7 +204,7 @@ def tables():
                                     ON UPDATE NO ACTION
                                     ON DELETE NO ACTION
                                     );"""
-
+    
     Tables[14]="""CREATE TABLE IF NOT EXISTS AKSIOLOGHSH(
                                     ID_aksiologhshs INTEGER NOT NULL,
                                     ID_paroxou INTEGER NOT NULL,
@@ -334,16 +335,6 @@ def in_pedio_spoudon(conn):
             ('ΝΟΣΗΛΕΥΤΗΣ'),
             ('ΝΟΣΗΛΕΥΤΙΚΟΣ ΑΞΙΩΜΑΤΙΚΟΣ'),
             ('ΝΟΣΟΚΟΜΟΣ'),
-            ('ΞΕΝΗ ΓΛΩΣΣΑ-ΑΓΓΛΙΚΑ'),
-            ('ΞΕΝΗ ΓΛΩΣΣΑ-ΓΑΛΛΙΚΑ'),
-            ('ΞΕΝΗ ΓΛΩΣΣΑ-ΓΕΡΜΑΝΙΚΑ'),
-            ('ΞΕΝΗ ΓΛΩΣΣΑ-ΙΑΠΩΝΙΚΑ'),
-            ('ΞΕΝΗ ΓΛΩΣΣΑ-ΙΣΠΑΝΙΚΑ'),
-            ('ΞΕΝΗ ΓΛΩΣΣΑ-ΙΤΑΛΙΚΑ'),
-            ('ΞΕΝΗ ΓΛΩΣΣΑ-ΚΙΝΕΖΙΚΑ'),
-            ('ΞΕΝΗ ΓΛΩΣΣΑ-ΚΟΡΕΑΤΙΚΑ'),
-            ('ΞΕΝΗ ΓΛΩΣΣΑ-ΡΩΣΙΚΑ'),
-            ('ΞΕΝΗ ΓΛΩΣΣΑ-ΣΟΥΗΔΙΚΑ'),
             ('ΟΔΟΝΤΙΑΤΡΟΣ'),
             ('ΟΔΟΝΤΙΑΤΡΟΣ ΣΤΡΑΤΙΩΤΙΚΟΣ'),
             ('ΟΙΚΟΝΟΜΟΔΙΟΙΚΗΤΙΚΟΣ'),
@@ -463,7 +454,7 @@ def in_pedio_spoudon(conn):
 
 def in_kathgoria_ergasias(conn):
     cur=conn.cursor()
-    insertion=""""INSERT INTO KATHGORIA_ERGASIAS(
+    insertion="""INSERT INTO KATHGORIA_ERGASIAS
                     (Titlos)
                     VALUES('Τουρισμός / Ξενοδοχεία'),
                     ('Εστίαση'),
@@ -523,8 +514,8 @@ def in_kathgoria_ergasias(conn):
 
 def in_ikanotita(conn):
     cur= conn.cursor()
-    insertion1="""INSERT INTO IKANOTHTA(
-        (Onoma,Typos)
+    insertion1="""INSERT INTO IKANOTHTA
+        (Onoma,Kathgoria)
         VALUES('Συντήρηση αυτοκινήτων','Hard'),
         ('Διαχείριση έργου','Hard'),
         ('Ξυλουργική','Hard'),
@@ -626,8 +617,7 @@ def in_ikanotita(conn):
         ('Χρονοπρογραμματισμός','Soft'),
         ('Εκπαιδευτικές ικανότητες','Soft'),
         ('Διαχείριση κρίσης','Soft'),
-        ('Προσαρμοστικότητα','Soft')
-    );"""
+        ('Προσαρμοστικότητα','Soft')"""
     cur.execute(insertion1)
     cur.close()
     return None
@@ -643,7 +633,9 @@ def main():
         else:
             print("ERROR ERROR ERROR")
     try:
+        in_ikanotita(conn)
         in_pedio_spoudon(conn)
+        in_kathgoria_ergasias(conn)
     except:
         print("Data already inserted")
     conn.commit()
@@ -654,22 +646,28 @@ def main():
         data=jf.SignUP().Sign_UP()
         
         print("Ας ξεκινήσουμε με την δημιουργία του προφίλ σας")
-
+        id_assignement=jf.User_id_assignement(data["Email"])
         if data["Eidos_xrhsth"]=='A':
-            jf.Profile_Creation().Create_ait_profil(data["Email"])
-            jf.Emppeiria().Create_education(jf.User_id_assignement(data["Email"]))
+           jf.Profile_Creation().Create_ait_profil(data["Email"])
+
+           jf.User_skills_insertion().Create_education(id_assignement)
+           
+           jf.User_skills_insertion().Create_proyphresia(id_assignement)
         elif data["Eidos_xrhsth"]=='P':
             jf.Profile_Creation().Create_paroxos_profil(data["Email"])
-            jf.Aggelia().Create_aggelia_erg(jf.User_id_assignement(data["Email"]))
     
     elif(signing==2):
         email=input("Email:")
         password=input("password:")
         user=jf.SignIn().Sign_In(email,password)
-    
+    else:
+        jf.User_skills_insertion().Create_education()
     '''-----------Μετά το sign in ή μετά από όλη την διαδικασία δημιουργίας προφίλ αρχίζουμε την αναζήτηση την αίτηση-----------'''
     conn.commit()
     conn.close()
 
 if __name__=="__main__":
     main()
+
+
+
