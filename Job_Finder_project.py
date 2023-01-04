@@ -89,7 +89,21 @@ class SignUP():
         conn.close()
         return None
 
+class SignIn():
+    
+    def __init__(self):
+        return
+
+    def Sign_In(self,email,password):
+        conn=db.create_connection(database)
+        cur=conn.cursor()
+        query="""SELECT User_ID,Email,Password from XRHSTHS where Email='%s' and Password='%s' """ % (email,password)
+        cur.execute(query)
+        user=cur.fetchone()
+        return user
+
 class Profile_Creation():
+
     def __init__(self):
         return
     
@@ -209,24 +223,40 @@ class Emppeiria():
         conn.close()
         return None
 
-    def Create_proyphresia_ypospsifiou():
-        titlos=input("Τίτλος : ")
+    def Create_proyphresia_ypospsifiou(self,id_ait):
+        no_work_experience=input("Αν δεν θέλετε να εισάγεται προϋπηρεσία πατήστε 0 αλλίως πατήστε 1")
+        if(not no_work_experience):
+            return None
+        print("Εισάγεται προϋπηρεσία")
+        titlos=input("Τίτλος θέσης εργασίας: ")
         while(titlos==''):
             print("Εισάγετε αποδεκτό Τίτλο : ")
             titlos=input("Τίτλος : ")
-        paroxos=input("Πάροχος : ")
+        paroxos=input("Πάροχος:")
         while(paroxos==''):
             print("Εισάγετε αποδεκτό Πάροχο : ")
             paroxos=input("Πάροχο : ")
-        hmnia_enarksis=input("Ημερομηνία έναρξης : ")
+        hmnia_enarksis=input("Ημερομηνία έναρξης. Χρησιμοποιήστε το format yyyy-mm-dd:")
         while(hmnia_enarksis==''):
             print("Εισάγετε αποδεκτή Ημερομηνία έναρξης : ")
             hmnia_enarksis=input("Ημερομηνία έναρξης : ")
-        hmnia_liksis=input("Ημερομηνία λήξης : ")
-        while(hmnia_liksis==''):
-            print("Εισάγετε αποδεκτή Ημερομηνία λήξης : ")
-            hmnia_liksis=input("Ημερομηνία λήξης : ")
-        Insert_in_Proyphresia_ypospsifiou(titlos,paroxos,hmnia_enarksis,hmnia_liksis)
+        hmnia_liksis=input("Ημερομηνία λήξης. Χρησιμοποιήστε το format yyyy-mm-dd\nΑν δουλεύεται ακόα εκεί πιέστε enter")
+        if(hmnia_liksis==''):hmnia_liksis="now"
+        x=input("Αν θέλετε να εισάγεται και άλλη προυπηρεσία πιέστε 1 αλλιώς 2:")
+        if(x==1):Emppeiria().Create_proyphresia_ypospsifiou(id_ait)
+        else:
+            self.Insert_proyphresia(titlos,id_ait,paroxos,hmnia_enarksis,hmnia_liksis)
+        return None
+
+    def Insert_proyphresia(self,id_ait,titlos,parochos,hmnia_enarksis,hmnia_liksis):
+        conn=db.create_connection(database)
+        cur=conn.cursor()
+        query = """ INSERT INTO PROYPHRESIA_YPOPSIFIOY (ID_aitoumenou,Titlos,Paroxos,Hmnia_enarksis,Hmnia_liskis) 
+                    VALUES ('%d','%d','%s','%s','%d','%d')""" % (id_ait,titlos,parochos,hmnia_enarksis,hmnia_liksis)
+        cur.execute(query)
+        cur.close()
+        conn.commit()
+        conn.close()
         return None
 
     def Create_ikanothta_ypopsifiou():
@@ -247,6 +277,7 @@ class Emppeiria():
 
 class Aggelia():
     def Create_aggelia_erg(self,id_par):
+        print("Δημιουργία Αγγελίας \n")
         titlos=input("Εισάγετε τίτλο : ")
         topothesia=input("Εισάγετε την πόλη όπου βρίσκεται η θέση εργασίας : ")
         while(topothesia==''):
@@ -256,11 +287,12 @@ class Aggelia():
         misthos=int(input("Εισάγετε τον μισθό της θέσης εργασίας:"))
         perigrafi=input("Εισάγετε περιγραφή : ")
         typos_ergasias=input("Εισάγετε τον τύπο εργασίας : ")
+        proyphresia=input("Εισάγετε απαιτούμενα έτη προϋπηρεσίας : ")
         hmnia_dhmosieusis=date.today()
-        self.Insert_in_Aggelia_erg(id_par,titlos,topothesia,wrario,misthos,perigrafi,typos_ergasias,hmnia_dhmosieusis)
+        self.Insert_in_Aggelia_erg(id_par,titlos,topothesia,wrario,misthos,perigrafi,typos_ergasias,proyphresia,hmnia_dhmosieusis)
         return
     
-    def Insert_in_Aggelia_erg(self,id_par,titlos,topothesia,wrario,misthos,perigrafi,typos_ergasias,hmnia_dhmosieusis):
+    def Insert_in_Aggelia_erg(self,id_par,titlos,topothesia,wrario,misthos,perigrafi,typos_ergasias,proyphresia,hmnia_dhmosieusis):
         id=self.Check_Aggelia_id()
         conn=db.create_connection(database)
         cur=conn.cursor()
@@ -287,37 +319,91 @@ class Aggelia():
             print(id[0])
             return id[0]+1
 
-"""-------------------------------------------"""
+class Apaithsh():
+    
+    def __init__(self):
+        return
 
-def Create_apaitoumeni_ekpaideusi():
-    bathmida=input("Βαθμίδα : ")
-    bathmos=input("Βαθμός : ")
-    Insert_in_Apaitoumeni_ekpaideusi(bathmida,bathmos)
-    return None
+    def Create_Apaitoumeni_ekpaideusi(self,id_pediou,bathmos):
+        print("Επιλέξτε ένα από τα παρακάτω πεδία σπουδών")
+        search=input("Αναζητήστε το πεδίο σπουδών που επιθυμείτε για καλύτερα αποτελέσματα:")
+        if(len(search)>5):
+            search=search[0:5]
+            search=search.upper()
+            conn=db.create_connection(database)
+            cur=conn.cursor()
+            placeholder="'%"+search+"%'"
+            query="""SELECT Id_pediou,Titlos from PEDIO_SPOUDON WHERE Titlos like %s"""%placeholder
+            cur.execute(query)
+            titloi=cur.fetchall()
+            for i in titloi:print(i)
+            id_pediou=int(input("Επιλέξτε τον κωδικό του πεδίου:"))
+            bathmos=input("Βαθμός: \n")
+            if(bathmos==''):bathmos=None
+            else:bathmos=int(bathmos)
+            self.Insert_Apaitoumeni_ekpaideusi(id_pediou,bathmos)
+        x=int(input("Αν θέλετε να εισάγετε κι άλλη εκπαίδευση πατήστε 1 αλλιώς πατήστε 2:"))
+        if(x==1):
+            self.Create_Apaitoumeni_ekpaideusi(self,id_pediou,bathmos)
+        else:
+            return None
 
-def Create_apaitoumeni_proyphresia():
-    titlos=input("Τίτλος : ")
-    while(titlos==''):
-        print("Εισάγετε αποδεκτό Τίτλο : ")
+    def Insert_Apaitoumeni_ekpaideusi(id_pediou,bathmos):
+        conn=db.create_connection(database)
+        cur=conn.cursor()
+        query = """ INSERT INTO APAITOUMENI_EKPAIDEYSI (ID_aggelias,ID_paroxou,ID_pediou,bathmos) VALUES ('%d','%d','%d','%s')""" % (id_agg,id_par,id_ped,bathmos)
+        cur.execute(query)
+        cur.close()
+        conn.commit()
+        conn.close()
+        return None
+
+    def Create_Apaitoumeni_proyphresia():
         titlos=input("Τίτλος : ")
-    diarkeia=input("Διάρκεια : ")
-    while(diarkeia==''):
-        print("Εισάγετε αποδεκτή Διάρκεια : ")
+        while(titlos==''):
+            print("Εισάγετε αποδεκτό Τίτλο : ")
+            titlos=input("Τίτλος : ")
         diarkeia=input("Διάρκεια : ")
-    Insert_in_Apaitoumeni_proyphresia(titlos,diarkeia)
-    return None
+        while(diarkeia==''):
+            print("Εισάγετε αποδεκτή Διάρκεια : ")
+            diarkeia=input("Διάρκεια : ")
+        Insert_in_Apaitoumeni_proyphresia(titlos,diarkeia)
+        return
 
-def Create_apaitoumeni_ikanothta():
-    titlos_ikanothtas=input("Τίτλος Ικανότητας : ")
-    while(titlos_ikanothtas==''):
-        print("Εισάγετε αποδεκτό Τίτλο Ικανότητας : ")
+    def Insert_in_Apaitoumeni_proyphresia(titlos,diarkeia):
+        conn9=db.create_connection(database)
+        cur=conn9.cursor()
+        query = """ INSERT INTO APAITOUMENI_PROYPHRESIA (titlos,diarkeia) VALUES ('%s','%s')""" % (titlos,diarkeia)
+        cur.execute(query)
+        cur.close()
+        conn9.commit()
+        conn9.close()
+        return None
+
+    def Create_Apaitoumeni_ikanothta():
         titlos_ikanothtas=input("Τίτλος Ικανότητας : ")
-    epipedo=input("Επίπεδο : ")
-    while(epipedo==''):
-        print("Εισάγετε αποδεκτό Επίπεδο : ")
+        while(titlos_ikanothtas==''):
+            print("Εισάγετε αποδεκτό Τίτλο Ικανότητας : ")
+            titlos_ikanothtas=input("Τίτλος Ικανότητας : ")
         epipedo=input("Επίπεδο : ")
-    Insert_in_Apaitoumeni_ikanothta(titlos_ikanothtas,epipedo)
-    return None
+        while(epipedo==''):
+            print("Εισάγετε αποδεκτό Επίπεδο : ")
+            epipedo=input("Επίπεδο : ")
+        Insert_in_Apaitoumeni_ikanothta(titlos_ikanothtas,epipedo)
+        return
+
+    def Insert_in_Apaitoumeni_ikanothta(titlos_ikanothtas,epipedo):
+        conn10=db.create_connection(database)
+        cur=conn10.cursor()
+        query = """ INSERT INTO APAITOUMENI_IKANOTHTA (titlos_ikanothtas,epipedo) VALUES ('%s','%s')""" % (titlos_ikanothtas,epipedo)
+        cur.execute(query)
+        cur.close()
+        conn10.commit()
+        conn10.close()
+        return None
+
+
+"""-------------------------------------------"""
 
 def Create_aithsh():
     """ΔΕΝ ΕΧΩ ΚΑΤΑΛΑΒΕΙ ΠΩΣ ΘΑ ΤΟ ΚΑΝΟΥΜΕ ΑΥΤΟ. ΘΑ ΕΛΕΓΑ ΟΤΑΝ ΕΜΦΑΝΙΖΕΙ ΑΓΓΕΛΙΑ ΣΤΟ 
@@ -340,20 +426,6 @@ def Create_aksiologhsh():
         perilipsi=input("Περίληψη : ")
     Insert_in_Profil_paroxou(bathmologia,perilipsi)
     return None
-
-
-class SignIn():
-    
-    def __init__(self):
-        return
-
-    def Sign_In(self,email,password):
-        conn=db.create_connection(database)
-        cur=conn.cursor()
-        query="""SELECT User_ID,Email,Password from XRHSTHS where Email='%s' and Password='%s' """ % (email,password)
-        cur.execute(query)
-        user=cur.fetchone()
-        return user
 
 
 """--------------------------- INSERT INPUT DATA VALUES INTO TABLES ---------------------------"""
@@ -408,35 +480,6 @@ def Insert_in_Ikanothta_ypopsifiou(titlos_kathgorias,titlos_ikanothtas,epipedo):
     conn6.close()
     return None
 
-def Insert_in_Apaitoumeni_ekpaideusi(bathmida,bathmos):
-    conn8=db.create_connection(database)
-    cur=conn8.cursor()
-    query = """ INSERT INTO APAITOUMENI_EKPAIDEYSI (bathmida,bathmos) VALUES ('%s','%s')""" % (bathmida,bathmos)
-    cur.execute(query)
-    cur.close()
-    conn8.commit()
-    conn8.close()
-    return None
-
-def Insert_in_Apaitoumeni_proyphresia(titlos,diarkeia):
-    conn9=db.create_connection(database)
-    cur=conn9.cursor()
-    query = """ INSERT INTO APAITOUMENI_PROYPHRESIA (titlos,diarkeia) VALUES ('%s','%s')""" % (titlos,diarkeia)
-    cur.execute(query)
-    cur.close()
-    conn9.commit()
-    conn9.close()
-    return None
-
-def Insert_in_Apaitoumeni_ikanothta(titlos_ikanothtas,epipedo):
-    conn10=db.create_connection(database)
-    cur=conn10.cursor()
-    query = """ INSERT INTO APAITOUMENI_IKANOTHTA (titlos_ikanothtas,epipedo) VALUES ('%s','%s')""" % (titlos_ikanothtas,epipedo)
-    cur.execute(query)
-    cur.close()
-    conn10.commit()
-    conn10.close()
-    return None
 
 def Insert_in_Aithsh(hmeromhnia_aithshs):
     conn11=db.create_connection(database)
