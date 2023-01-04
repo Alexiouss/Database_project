@@ -155,7 +155,7 @@ class SignIn():
         user=cur.fetchone()
         return user
 
-class User_skills_insertion():
+class Empeiria():
     
     def __init__(self):
         return
@@ -167,7 +167,7 @@ class User_skills_insertion():
             hmnia_enarksis=input("Έναρξη εκπαίδευσης. Χρησιμοποιήστε το format yyyy-mm-dd")
             hmnia_liksis=input("Λήξη εκπαίδευσης.")
             bathmos=int(input("Βαθμός απολυτηρίου\n"))
-            User_skills_insertion().Insert_ekpaideysi(id_ait,bathmos,hmnia_enarksis,hmnia_liksis,bathmida,0)
+            Empeiria().Insert_ekpaideysi(id_ait,bathmos,hmnia_enarksis,hmnia_liksis,bathmida,0)
         else:
             print("Επιλέξτε ένα από τα παρακάτω πεδία σπουδών")
             search=input("Αναζητήστε το πεδίο σπουδών σας για καλύτερα αποτελέσματα:")
@@ -189,10 +189,10 @@ class User_skills_insertion():
             bathmos=input("Βαθμός: \n")
             if(bathmos==''):bathmos=None
             else:bathmos=int(bathmos)
-            User_skills_insertion().Insert_ekpaideysi(id_ait,bathmos,hmnia_enarksis,hmnia_liksis,bathmida,id_pediou)
+            Empeiria().Insert_ekpaideysi(id_ait,bathmos,hmnia_enarksis,hmnia_liksis,bathmida,id_pediou)
         x=int(input("Αν θέλετε να εισάγετε κι άλλη εκπαίδευση πατήστε 1 αλλιώς πατήστε 2:"))
         if(x==1):
-            User_skills_insertion().Create_education(id_ait)
+            Empeiria().Create_education(id_ait)
         else:
             return None
     
@@ -215,14 +215,14 @@ class User_skills_insertion():
         no_work_experience=input("Αν δεν θέλετε να εισάγεται προϋπηρεσία πατήστε 0 αλλίως πατήστε 1")
         if(not no_work_experience):
             return None
-        print("Εισάγεται προϋπηρεσία")
-        titlos=input("Τίτλος θέσης εργασίας: ")
+        Select_kathgories_ergasias()
+        titlos=(input("Επιλέξτε μία κατηγορία εργασίας από τις παρακάτω σύμφωνα με το id της"))
         parochos=input("Πάροχος:")
         Hmnia_enarksis=input("Ημερομηνία έναρξης. Χρησιμοποιήστε το format yyyy-mm-dd:")
         Hmnia_liksis=input("Ημερομηνία λήξης. Χρησιμοποιήστε το format yyyy-mm-dd\nΑν δουλεύεται ακόα εκεί πιέστε enter")
         if(Hmnia_liksis==''):Hmnia_liksis="now"
         x=input("Αν θέλετε να εισάγεται και άλλη προυπηρεσία πιέστε 1 αλλιώς 2:")
-        if(x==1):User_skills_insertion().Create_proyphresia(id_ait)
+        if(x==1):Empeiria().Create_proyphresia(id_ait)
         else:
             self.Insert_proyphresia(titlos,id_ait,parochos,Hmnia_enarksis,Hmnia_liksis)
         return None
@@ -245,3 +245,24 @@ def User_id_assignement(email):
     cur.execute(query)
     id=cur.fetchone()
     return id[0]
+
+def Select_kathgories_ergasias():
+    search=input("Αναζητήστε την κατηγορία εργασίας σας για καλύτερα αποτελέσματα:")
+    conn=db.create_connection(database)
+    cur=conn.cursor()
+    if(search==''):
+        query="""SELECT ID_kathgorias,Titlos from KATHGORIA_ERGASIAS"""
+        cur.execute(query)
+        titloi=cur.fetchall()
+        for i in titloi:print(i)
+        return None
+    else:
+        if(len(search)>5):
+            search=search[0:5]
+        search=search.lower()
+        placeholder="'%"+search+"%'"
+        query="""SELECT ID_kathgorias,Titlos from KATHGORIA_ERGASIAS WHERE Titlos like %s"""%placeholder
+        cur.execute(query)
+        titloi=cur.fetchall()
+        for i in titloi:print(i)
+        return None
