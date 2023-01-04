@@ -116,12 +116,12 @@ def tables():
     Tables[8]="""CREATE TABLE IF NOT EXISTS AGGELIA_ERGASIAS(
                                 ID_aggelias INTEGER NOT NULL,
                                 ID_paroxou INTEGER NOT NULL,
+                                Titlos VARCHAR(100),
                                 Topothesia VARCHAR(50) NOT NULL,
                                 Wrario VARCHAR(30),
                                 Misthos INTEGER,
                                 Perigrafi TEXT,
                                 Typos_ergasias VARCHAR(50),
-                                Titlos VARCHAR(100),
                                 Hmeromhnia_dhmosieusis DATE NOT NULL,
                                 PRIMARY KEY(ID_aggelias,ID_paroxou),
                                 FOREIGN KEY(ID_paroxou) REFERENCES PROFIL_PAROXOU(ID_paroxou)
@@ -476,17 +476,17 @@ def main():
         print("Ας ξεκινήσουμε με την δημιουργία του προφίλ σας")
 
         if data["Eidos_xrhsth"]=='A':
-           jf.Profile_Creation().Create_ait_profil(data["Email"])
-           jf.User_skills_insertion().Create_education(jf.User_id_assignement(data["Email"]))
+            jf.Profile_Creation().Create_ait_profil(data["Email"])
+            jf.Emppeiria().Create_education(jf.User_id_assignement(data["Email"]))
         elif data["Eidos_xrhsth"]=='P':
             jf.Profile_Creation().Create_paroxos_profil(data["Email"])
+            jf.Aggelia().Create_aggelia_erg(jf.User_id_assignement(data["Email"]))
     
     elif(signing==2):
         email=input("Email:")
         password=input("password:")
         user=jf.SignIn().Sign_In(email,password)
-    else:
-        jf.User_skills_insertion().Create_education()
+    
     '''-----------Μετά το sign in ή μετά από όλη την διαδικασία δημιουργίας προφίλ αρχίζουμε την αναζήτηση την αίτηση-----------'''
     conn.commit()
     conn.close()

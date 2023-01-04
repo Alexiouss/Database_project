@@ -139,8 +139,8 @@ class Profile_Creation():
         while(thlefono==''):
             print("Εισάγετε αποδεκτό Τηλέφωνο : ")
             thlefono=input("Τηλέφωνο : ")
-        Insert_in_Profil_paroxou(eponymia,perigrafh,dieythynsh,thlefono,email)
-        return {"Eponymia":eponymia,"Perigrafh":perigrafh,"Dieythynsh":dieythynsh,"Thlefono":thlefono,"Email":email}
+        self.Insert_in_Profil_paroxou(eponymia,perigrafh,dieythynsh,thlefono,email)
+        return 
 
     def Insert_in_Profil_paroxou(self,eponymia,perigrafh,dieythynsh,thlefono,email):
         conn=db.create_connection(database)
@@ -245,20 +245,49 @@ class Emppeiria():
         Insert_in_Ikanothta_ypopsifiou(titlos_kathgorias,titlos_ikanothtas,epipedo)
         return None
 
-"""-------------------------------------------"""
+class Aggelia():
+    def Create_aggelia_erg(self,id_par):
+        titlos=input("Εισάγετε τίτλο : ")
+        topothesia=input("Εισάγετε την πόλη όπου βρίσκεται η θέση εργασίας : ")
+        while(topothesia==''):
+            print("Εισάγετε αποδεκτή Τοποθεσία : ")
+            topothesia=input("Τοποθεσία : ")
+        wrario=input("Εισάγετε το ωράριο της θέση εργασίας :" )
+        misthos=int(input("Εισάγετε τον μισθό της θέσης εργασίας:"))
+        perigrafi=input("Εισάγετε περιγραφή : ")
+        typos_ergasias=input("Εισάγετε τον τύπο εργασίας : ")
+        hmnia_dhmosieusis=date.today()
+        self.Insert_in_Aggelia_erg(id_par,titlos,topothesia,wrario,misthos,perigrafi,typos_ergasias,hmnia_dhmosieusis)
+        return
+    
+    def Insert_in_Aggelia_erg(self,id_par,titlos,topothesia,wrario,misthos,perigrafi,typos_ergasias,hmnia_dhmosieusis):
+        id=self.Check_Aggelia_id()
+        conn=db.create_connection(database)
+        cur=conn.cursor()
+        query = """ INSERT INTO AGGELIA_ERGASIAS (ID_aggelias,ID_paroxou,Titlos,Topothesia,Wrario,Misthos,Perigrafi,Typos_ergasias,Hmeromhnia_dhmosieusis) 
+        VALUES ('%d','%d','%s','%s','%s','%d','%s','%s','%s')""" % (id,id_par,titlos,topothesia,wrario,misthos,perigrafi,typos_ergasias,hmnia_dhmosieusis)
+        cur.execute(query)
+        cur.close()
+        conn.commit()
+        conn.close()
+        return
+    
+    def Check_Aggelia_id(self):
+        conn=db.create_connection(database)
+        cur=conn.cursor()
+        query=""" SELECT ID_aggelias FROM AGGELIA_ERGASIAS ORDER BY ID_aggelias DESC"""
+        cur.execute(query)
+        id=cur.fetchone()
+        cur.close()
+        conn.commit()
+        conn.close()
+        if(id==None):
+            return 1
+        else:
+            print(id[0])
+            return id[0]+1
 
-def Create_aggelia_erg():
-    topothesia=input("Τοποθεσία : ")
-    while(topothesia==''):
-        print("Εισάγετε αποδεκτή Τοποθεσία : ")
-        topothesia=input("Τοποθεσία : ")
-    wrario=input("Ωράριο : ")
-    misthos=input("Μισθός : ")
-    perigrafi=input("Περιγραφή : ")
-    typos_ergasias=input("Τύπος Εργασίας : ")
-    titlos=input("Τίτλος : ")
-    Insert_in_Aggelia_erg(topothesia,wrario,misthos,perigrafi,typos_ergasias,titlos)
-    return None
+"""-------------------------------------------"""
 
 def Create_apaitoumeni_ekpaideusi():
     bathmida=input("Βαθμίδα : ")
@@ -377,16 +406,6 @@ def Insert_in_Ikanothta_ypopsifiou(titlos_kathgorias,titlos_ikanothtas,epipedo):
     cur.close()
     conn6.commit()
     conn6.close()
-    return None
-
-def Insert_in_Aggelia_erg(topothesia,wrario,misthos,perigrafi,typos_ergasias,titlos):
-    conn7=db.create_connection(database)
-    cur=conn7.cursor()
-    query = """ INSERT INTO AGGELIA_ERGASIAS (topothesia,wrario,misthos,perigrafi,typos_ergasias,titlos) VALUES ('%s','%s','%s','%s','%s','%s')""" % (topothesia,wrario,misthos,perigrafi,typos_ergasias,titlos)
-    cur.execute(query)
-    cur.close()
-    conn7.commit()
-    conn7.close()
     return None
 
 def Insert_in_Apaitoumeni_ekpaideusi(bathmida,bathmos):
