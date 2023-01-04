@@ -211,7 +211,32 @@ class User_skills_insertion():
         conn.close()
         return None
 
-        
+    def Create_proyphresia(self,id_ait):
+        no_work_experience=input("Αν δεν θέλετε να εισάγεται προϋπηρεσία πατήστε 0 αλλίως πατήστε 1")
+        if(not no_work_experience):
+            return None
+        print("Εισάγεται προϋπηρεσία")
+        titlos=input("Τίτλος θέσης εργασίας: ")
+        parochos=input("Πάροχος:")
+        Hmnia_enarksis=input("Ημερομηνία έναρξης. Χρησιμοποιήστε το format yyyy-mm-dd:")
+        Hmnia_liksis=input("Ημερομηνία λήξης. Χρησιμοποιήστε το format yyyy-mm-dd\nΑν δουλεύεται ακόα εκεί πιέστε enter")
+        if(Hmnia_liksis==''):Hmnia_liksis="now"
+        x=input("Αν θέλετε να εισάγεται και άλλη προυπηρεσία πιέστε 1 αλλιώς 2:")
+        if(x==1):User_skills_insertion().Create_proyphresia(id_ait)
+        else:
+            self.Insert_proyphresia(titlos,id_ait,parochos,Hmnia_enarksis,Hmnia_liksis)
+        return None
+
+    def Insert_proyphresia(self,id_ait,titlos,parochos,Hmnia_enarksis,Hmnia_liksis):
+        conn=db.create_connection(database)
+        cur=conn.cursor()
+        query = """ INSERT INTO PROYPHRESIA_YPOPSIFIOY (ID_aitoumenou,Titlos,Paroxos,Hmnia_enarksis,Hmnia_liskis) 
+                    VALUES ('%d','%d','%s','%s','%d','%d')""" % (id_ait,titlos,parochos,Hmnia_enarksis,Hmnia_liksis)
+        cur.execute(query)
+        cur.close()
+        conn.commit()
+        conn.close()
+        return None
 
 def User_id_assignement(email):
     conn=db.create_connection(database)
