@@ -184,7 +184,7 @@ class Empeiria():
             id_pediou=int(input("Επιλέξτε τον κωδικό του πεδίου:"))
             hmnia_enarksis=input("Έναρξη εκπαίδευσης. Χρησιμοποιήστε το format yyyy-mm-dd")
             print("Αν σπουδάζετε αυτήν την στιγμή πατήστε enter")
-            hmnia_liksis=input("Λήξη εκπαίδευσης.")
+            hmnia_liksis=input("Λήξη εκπαίδευσης:")
             if(hmnia_liksis==''):hmnia_liksis=date.today()
             bathmos=input("Βαθμός: \n")
             if(bathmos==''):bathmos=None
@@ -216,23 +216,48 @@ class Empeiria():
         if(not no_work_experience):
             return None
         Select_kathgories_ergasias()
-        titlos=(input("Επιλέξτε μία κατηγορία εργασίας από τις παρακάτω σύμφωνα με το id της"))
-        parochos=input("Πάροχος:")
+        kathgoria=int(input("Επιλέξτε μία κατηγορία εργασίας από τις παρακάτω σύμφωνα με το id της"))
+        titlos=input("Καταχωρήστε τον τίτλο εργασίας σας:")
+        paroxos=input("Πάροχος:")
         Hmnia_enarksis=input("Ημερομηνία έναρξης. Χρησιμοποιήστε το format yyyy-mm-dd:")
-        Hmnia_liksis=input("Ημερομηνία λήξης. Χρησιμοποιήστε το format yyyy-mm-dd\nΑν δουλεύεται ακόα εκεί πιέστε enter")
+        Hmnia_liksis=input("Ημερομηνία λήξης. Χρησιμοποιήστε το format yyyy-mm-dd\nΑν δουλεύεται ακόμα εκεί πιέστε enter")
         if(Hmnia_liksis==''):Hmnia_liksis="now"
         x=input("Αν θέλετε να εισάγεται και άλλη προυπηρεσία πιέστε 1 αλλιώς 2:")
         if(x==1):Empeiria().Create_proyphresia(id_ait)
         else:
-            self.Insert_proyphresia(titlos,id_ait,parochos,Hmnia_enarksis,Hmnia_liksis)
+            self.Insert_proyphresia(id_ait,kathgoria,titlos,paroxos,Hmnia_enarksis,Hmnia_liksis)
         return None
 
-    def Insert_proyphresia(self,id_ait,titlos,parochos,Hmnia_enarksis,Hmnia_liksis):
+    def Insert_proyphresia(self,id_ait,kathgoria,titlos,parochos,Hmnia_enarksis,Hmnia_liksis):
         conn=db.create_connection(database)
         cur=conn.cursor()
-        query = """ INSERT INTO PROYPHRESIA_YPOPSIFIOY (ID_aitoumenou,Titlos,Paroxos,Hmnia_enarksis,Hmnia_liskis) 
-                    VALUES ('%d','%d','%s','%s','%d','%d')""" % (id_ait,titlos,parochos,Hmnia_enarksis,Hmnia_liksis)
+        query = """ INSERT INTO PROYPHRESIA_YPOPSIFIOY (ID_aitoumenou,ID_kathgorias_ergasias,Titlos,Paroxos,Hmnia_enarksis,Hmnia_liskis) 
+                    VALUES ('%d','%d','%s','%s','%s','%s')""" % (id_ait,kathgoria,titlos,parochos,Hmnia_enarksis,Hmnia_liksis)
         cur.execute(query)
+        cur.close()
+        conn.commit()
+        conn.close()
+        return None
+
+    def Ikanothta_ypopsifiou(self,id_ait):
+        x=int(input("Εάν θέλετε να εισάγεται ικανότητες πιέστε 1 αλλίως πιέστε 0:"))
+        if(x==0):
+            return None
+        
+        Kathgoria_skill=int(input("Επιλέξτε Hard skill ή soft skill. Πιέστε 1 για hard 2 για soft:"))
+        print("Διαλέξτε 0 ή παραπάνω από τις παρακάτω ικανότητες")
+        Select_kathgoria_ikanotitas(Kathgoria_skill)
+        ikanonites=[int(ikanotita) for ikanotita in input().split()]
+        self.Insert_ikanothta(id_ait,ikanonites)
+        return None
+    
+    def Insert_ikanothta(self,id_ait,ikanotites):
+        conn=db.create_connection(database)
+        cur=conn.cursor()
+        for i in range(len(ikanotites)):
+            query = """ INSERT INTO KATEXEI_IKANOTHTA (ID_aitoumenou,ID_ikanothtas) 
+                        VALUES ('%d','%d')""" % (id_ait,ikanotites[i])
+            cur.execute(query)
         cur.close()
         conn.commit()
         conn.close()
@@ -266,3 +291,15 @@ def Select_kathgories_ergasias():
         titloi=cur.fetchall()
         for i in titloi:print(i)
         return None
+
+def Select_kathgoria_ikanotitas(kathgoria_ikanotitas):
+    conn=db.create_connection(database)
+    cur=conn.cursor()
+    if(kathgoria_ikanotitas==1):
+        query="""SELECT ID_skill,Onoma from IKANOTHTA WHERE Kathgoria='Hard'"""
+    else:
+        query="""SELECT ID_skill,Onoma from IKANOTHTA WHERE Kathgoria='Soft'"""
+    cur.execute(query)
+    data=cur.fetchall()
+    for i in data:print(i)
+    return None
