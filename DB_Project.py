@@ -63,7 +63,7 @@ def tables():
                                 ID_aitoumenou INTEGER NOT NULL,
                                 Bathmos INTEGER DEFAULT NULL,
                                 Hmnia_enarksis DATE NOT NULL DEFAULT '0000-00-00',
-                                Hmnia_liksis DATE DEFAULT '0000-00-00',
+                                Hmnia_liksis DATE DEFAULT NULL,
                                 Bathmida INTEGER DEFAULT NULL,
                                 ID_pediou INTEGER DEFAULT 0,
                                 PRIMARY KEY(ID_aitoumenou,Hmnia_enarksis),
@@ -106,7 +106,6 @@ def tables():
     Tables[7]="""CREATE TABLE IF NOT EXISTS KATEXEI_IKANOTHTA(
                                 ID_aitoumenou INTEGER NOT NULL,
                                 ID_ikanothtas INTEGER NOT NULL,
-                                Epipedo INTEGER DEFAULT NULL,
                                 PRIMARY KEY(ID_aitoumenou,ID_ikanothtas),
                                 FOREIGN KEY(ID_aitoumenou) REFERENCES PROFIL_AITOUMENOY(ID_aitoumenou)
                                 ON UPDATE CASCADE
@@ -119,7 +118,7 @@ def tables():
     
     Tables[8]="""CREATE TABLE IF NOT EXISTS IKANOTHTA(
                                     ID_skill INTEGER NOT NULL,
-                                    Onoma VARCHAR(50) NOT NULL,
+                                    Onoma VARCHAR(100) NOT NULL UNIQUE,
                                     Kathgoria VARCHAR(20) NOT NULL,
                                     PRIMARY KEY(ID_skill)
                                     );"""
@@ -459,55 +458,55 @@ def in_kathgoria_ergasias(conn):
                     (Titlos)
                     VALUES('τουρισμός / ξενοδοχεία'),
                     ('εστίαση'),
-                    ('μηχανικοί-Ηλεκτρολόγοι'),
-                    ('μηχανικοί-Αρχιτέκτονες'),
-                    ('μηχανικοί-Χημικοί'),
-                    ('μηχανικοί-Πολιτικοί'),
-                    ('μηχανικοί-Μηχανολόγοι'),
-                    ('μηχανικοί-Αεροναυπηγοί'),
+                    ('μηχανικοί-ηλεκτρολόγοι'),
+                    ('μηχανικοί-αρχιτέκτονες'),
+                    ('μηχανικοί-χημικοί'),
+                    ('μηχανικοί-πολιτικοί'),
+                    ('μηχανικοί-μηχανολόγοι'),
+                    ('μηχανικοί-αεροναυπηγοί'),
                     ('ναυτικοί'),
                     ('εκπαιδευτικοί'),
-                    ('εξυπηρέτηση Πελατών / Call Center'),
+                    ('εξυπηρέτηση πελατών / Call Center'),
                     ('λογιστήριο'),
-                    ('τομέας Παραγωγής'),
-                    ('δημιουργικό Τμήμα / Γραφίστες'),
+                    ('τομέας παραγωγής'),
+                    ('δημιουργικό τμήμα / γραφίστες'),
                     ('διαφήμιση / Promotion'),
                     ('τράπεζες'),
                     ('επιστήμες'),
-                    ('ανώτατη Διοίκηση'),
+                    ('ανώτατη διοίκηση'),
                     ('ασφάλειες'),
-                    ('διαχείριση Ποιότητας'),
+                    ('διαχείριση ποιότητας'),
                     ('αερομεταφορές'),
                     ('μεσιτικά'),
-                    ('γραμματειακή Υποστήριξη'),
-                    ('υποστηρικτικοί Υπάλληλοι'),
-                    ('αποθήκη / Logistics'),
+                    ('γραμματειακή υποστήριξη'),
+                    ('υποστηρικτικοί υπάλληλοι'),
+                    ('αποθήκη / logistics'),
                     ('οδηγοί'),
-                    ('υπάλληλοι Γραφείου'),
+                    ('υπάλληλοι γραφείου'),
                     ('μεταφορές'),
                     ('μάρκετινγκ'),
-                    ('διοίκηση Επιχειρήσεων'),
+                    ('διοίκηση επιχειρήσεων'),
                     ('αγροτικά'),
-                    ('δημόσιες Σχέσεις'),
-                    ('πολιτιστικά / Τέχνες'),
+                    ('δημόσιες σχέσεις'),
+                    ('πολιτιστικά / τέχνες'),
                     ('δημοσιογράφοι / ΜΜΕ'),
-                    ('εθελοντικές Εργασίες'),
-                    ('αισθητική / Κομμωτήρια'),
+                    ('εθελοντικές εργασίες'),
+                    ('αισθητική / κομμωτήρια'),
                     ('νομικοί'),
                     ('πωλήσεις'),
-                    ('καταστήματα Λιανικής'),
-                    ('τεχνικοί / Συντηρητές'),
-                    ('οικιακοί Βοηθοί'),
-                    ('επαγγέλματα Υγείας'),
+                    ('καταστήματα λιανικής'),
+                    ('τεχνικοί / συντηρητές'),
+                    ('οικιακοί βοηθοί'),
+                    ('επαγγέλματα υγείας'),
                     ('πληροφορική'),
-                    ('εξωτερικές Εργασίες / Security'),
+                    ('εξωτερικές εργασίες / security'),
                     ('χρηματοοικονομικά'),
-                    ('αγορές / Προμήθεις'),
-                    ('human Resources(HR)'),
+                    ('αγορές / προμήθεις'),
+                    ('human resources(HR)'),
                     ('τηλεπικοινωνίες'),
                     ('περιβάλλον'),
                     ('επιχειρηματικότητα'),
-                    ('σύμβουλοι Επιχειρήσεων'),
+                    ('σύμβουλοι επιχειρήσεων'),
                     ('δίκτυα')"""
     cur.execute(insertion)
     cur.close()
@@ -515,7 +514,7 @@ def in_kathgoria_ergasias(conn):
 
 def in_ikanotita(conn):
     cur= conn.cursor()
-    insertion1="""INSERT INTO IKANOTHTA
+    insertion2="""INSERT INTO IKANOTHTA
         (Onoma,Kathgoria)
         VALUES('Συντήρηση αυτοκινήτων','Hard'),
         ('Διαχείριση έργου','Hard'),
@@ -592,7 +591,6 @@ def in_ikanotita(conn):
         ('Καθοδήγηση','Soft'),
         ('Ενσυναίσθηση','Soft'),
         ('Υπομονή','Soft'),
-        ('Συνεργασία','Soft'),
         ('Συναισθηματική νοημοσύνη','Soft'),
         ('Επιρροή','Soft'),
         ('Αυτογνωσία','Soft'),
@@ -608,7 +606,6 @@ def in_ikanotita(conn):
         ('Καλλιτεχνία','Soft'),
         ('Ευθύνη','Soft'),
         ('Αφοσίωση','Soft'),
-        ('Αυτοπεποίθηση','Soft'),
         ('Εξυπηρέτηση πελατών','Soft'),
         ('Διαχείριση της ομάδας','Soft'),
         ('Τεκμηρίωση','Soft'),
@@ -619,7 +616,7 @@ def in_ikanotita(conn):
         ('Εκπαιδευτικές ικανότητες','Soft'),
         ('Διαχείριση κρίσης','Soft'),
         ('Προσαρμοστικότητα','Soft')"""
-    cur.execute(insertion1)
+    cur.execute(insertion2)
     cur.close()
     return None
 
@@ -634,9 +631,15 @@ def main():
         else:
             print("ERROR ERROR ERROR")
     try:
-        in_ikanotita(conn)
-        in_pedio_spoudon(conn)
         in_kathgoria_ergasias(conn)
+    except:
+        print("Data already inserted")
+    try:
+        in_pedio_spoudon(conn)
+    except:
+        print("Data already inserted")
+    try:
+        in_ikanotita(conn)
     except:
         print("Data already inserted")
     conn.commit()
@@ -645,6 +648,9 @@ def main():
     signing=int(input())
     if(signing==1):
         data=jf.SignUP().Sign_UP()
+        x=input("Πηγαινε με στην συναρτηση γαμω το σπιτι μου:")
+        if(x):
+            jf.Empeiria().Ikanothta_ypopsifiou(jf.User_id_assignement(data["Email"]))
         print("Ας ξεκινήσουμε με την δημιουργία του προφίλ σας")
         id_assignement=jf.User_id_assignement(data["Email"])
         if data["Eidos_xrhsth"]=='A':
