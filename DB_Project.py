@@ -129,10 +129,9 @@ def tables():
                                 ID_kathgorias_ergasias INTEGER NOT NULL,
                                 Titlos VARCHAR(100),
                                 Topothesia VARCHAR(50) NOT NULL,
-                                Wrario VARCHAR(30),
+                                Wrario VARCHAR(10),
                                 Misthos INTEGER,
                                 Perigrafi TEXT,
-                                Typos_ergasias VARCHAR(50),
                                 Apaitoumeni_proyphresia INTEGER,
                                 Hmeromhnia_dhmosieusis DATE NOT NULL,
                                 PRIMARY KEY(ID_aggelias,ID_paroxou),
@@ -660,6 +659,7 @@ def main():
            jf.Empeiria().Create_proyphresia(id_assignement)
         elif data["Eidos_xrhsth"]=='P':
             jf.Profile_Creation().Create_paroxos_profil(data["Email"])
+            jf.Aggelia().Create_aggelia_erg(id_assignement)
     
     elif(signing==2):
         email=input("Email:")
