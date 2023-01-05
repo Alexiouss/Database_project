@@ -265,7 +265,6 @@ class Empeiria():
 class Aggelia():
     def Create_aggelia_erg(self,id_par):
         print("Δημιουργία Αγγελίας \nΕπιλέξτε μία από τις κατηγορίες εργασίας : ")
-        search=input("Αναζητήστε την κατηγορία εργασίας για καλύτερα αποτελέσματα : ")
         Select_kathgories_ergasias()
         id_kathgorias=int(input("Επιλέξτε τον κωδικό της κατηγορίας:"))
         titlos=input("Εισάγετε τίτλο : ")
@@ -276,20 +275,19 @@ class Aggelia():
         wrario=input("Εισάγετε το ωράριο της θέση εργασίας :" )
         misthos=int(input("Εισάγετε τον μισθό της θέσης εργασίας : "))
         perigrafi=input("Εισάγετε περιγραφή : ")
-        typos_ergasias=input("Εισάγετε τον τύπο εργασίας : ")
-        proyphresia=input("Εισάγετε απαιτούμενα έτη προϋπηρεσίας : ")
+        proyphresia=int(input("Εισάγετε απαιτούμενα έτη προϋπηρεσίας : "))
         hmnia_dhmosieusis=date.today()
-        id=self.Insert_in_Aggelia_erg(id_par,id_kathgorias,titlos,topothesia,wrario,misthos,perigrafi,typos_ergasias,proyphresia,hmnia_dhmosieusis)
+        id=self.Insert_in_Aggelia_erg(id_par,id_kathgorias,titlos,topothesia,wrario,misthos,perigrafi,proyphresia,hmnia_dhmosieusis)
         Apaithsh().Create_Apaitoumeni_ekpaideusi(id,id_par)
         Apaithsh().Create_Apaitoumeni_ikanothta(id,id_par)
         return
 
-    def Insert_in_Aggelia_erg(self,id_par,id_kathgorias,titlos,topothesia,wrario,misthos,perigrafi,typos_ergasias,proyphresia,hmnia_dhmosieusis):
+    def Insert_in_Aggelia_erg(self,id_par,id_kathgorias,titlos,topothesia,wrario,misthos,perigrafi,proyphresia,hmnia_dhmosieusis):
         id=self.Check_Aggelia_id()
         conn=db.create_connection(database)
         cur=conn.cursor()
-        query = """ INSERT INTO AGGELIA_ERGASIAS (ID_aggelias,ID_paroxou,ID_kathgorias_ergasias,Titlos,Topothesia,Wrario,Misthos,Perigrafi,Typos_ergasias,Apaitoumeni_proyphresia,Hmeromhnia_dhmosieusis) 
-        VALUES ('%d','%d','%d','%s','%s','%s','%d','%s','%s','%s','%s')""" % (id,id_par,id_kathgorias,titlos,topothesia,wrario,misthos,perigrafi,typos_ergasias,proyphresia,hmnia_dhmosieusis)
+        query = """ INSERT INTO AGGELIA_ERGASIAS (ID_aggelias,ID_paroxou,ID_kathgorias_ergasias,Titlos,Topothesia,Wrario,Misthos,Perigrafi,Apaitoumeni_proyphresia,Hmeromhnia_dhmosieusis) 
+        VALUES ('%d','%d','%d','%s','%s','%s','%d','%s','%d','%s')""" % (id,id_par,id_kathgorias,titlos,topothesia,wrario,misthos,perigrafi,proyphresia,hmnia_dhmosieusis)
         cur.execute(query)
         cur.close()
         conn.commit()
@@ -390,8 +388,8 @@ class Aithsh():
         print("Αναζήτηση αγγελιών\nΦίλτρα αναζήτησης(Κατηγορία εργασίας,Τίτλος θέσης,Ωράριο,Μισθός,Τύπος εργασίας,Απαιτούμενη προϋπηρεσία)")
         print("Αν δεν θέλετε αναζήτηση με κάποιο φίλτρο πατήστε enter")
         Select_kathgories_ergasias()
-        try:Filters['ID_kathgorias']=int(input("Επιλέξτε μία κατηγορία εργασίας από τις παρακάτω σύμφωνα με το id της"))
-        except:Filters.update({'ID_kathgorias':''})
+        try:Filters['ID_kathgorias_ergasias']=int(input("Επιλέξτε μία κατηγορία εργασίας από τις παρακάτω σύμφωνα με το id της"))
+        except:Filters.update({'ID_kathgorias_ergasias':''})
         Filters.update({'Titlos':input("Καταχωρήστε τίτλο εργασίας:")})
         titlos=Filters['Titlos']
         if(len(titlos)>5):
@@ -400,17 +398,64 @@ class Aithsh():
         Filters['Topothesia']=input("Καταχωρήστε τοποθεσία(πόλη):")
         try:Filters['Topothesia'][0].upper()
         except:Filters['Topothesia']=''
-        try:Filters['Wrario']=int(input("Εισάγεται τις ώρες/μέρα εργασίας:"))
+        try:Filters['Wrario']=input("Εισάγεται τις ώρες/μέρα εργασίας:")
         except:Filters['Wrario']=''
         try:Filters['Misthos']=int(input("Εισάγεται τον ελάχιστο μισθό:"))
         except:Filters['Misthos']=''
-        Filters['Typos_ergasias']=input("Εισάγεται τον τύπο εργασίας(Περιττό να πω ότι πάλι δεν θυμάμαι τι είναι αυτό):")
-        try:Filters['Apaitoumenh_proyphresia']=int(input("Εισάγεται τον ελάχιστο χρόνο προϋπηρεσίας σε χρόνια:"))
-        except:Filters['Apaitoumenh_proyphresia']=''
-        for i in range(len(Filters)):
+        try:Filters['Apaitoumeni_proyphresia']=int(input("Εισάγεται τον ελάχιστο χρόνο προϋπηρεσίας σε χρόνια:"))
+        except:Filters['Apaitoumeni_proyphresia']=''
+        not_filters=[]
+        for i in Filters.keys():
             if(Filters[i]==''):
-                del[Filters[i]]
-        print(Filters)
+                not_filters.append(i)
+        for filter in not_filters:
+            del Filters[filter]
+        self.Select_aggelies_to_show(Filters)
+        return None
+
+    def Select_aggelies_to_show(self,Filters):
+        conn=db.create_connection(database)
+        cur=conn.cursor()
+        filters_keys=[]
+        filters_values=[]
+        for i in Filters.keys():
+            filters_keys.append(i)
+        for i in Filters.values():
+            filters_values.append(i)
+        query="""SELECT P.Eponymia,A.ID_aggelias,A.Titlos,A.Topothesia,A.Wrario,A.Misthos,A.Perigrafi,A.Apaitoumeni_proyphresia,
+        A.Hmeromhnia_dhmosieusis,E.Titlos as pedio_ergasias,SP.Titlos as titlos_ptyxiou,
+        AE.Elaxisth_bathmida,IK.Onoma as ikanotita,IK.Kathgoria
+        FROM AGGELIA_ERGASIAS AS A,PROFIL_PAROXOU as P,KATHGORIA_ERGASIAS as E,PEDIO_SPOUDON as SP,
+        APAITOUMENI_EKPAIDEYSI AS AE,IKANOTHTA AS IK,APAITEI_IKANOTHTA AS AI
+        WHERE A.ID_paroxou=P.ID_paroxou 
+        and A.ID_kathgorias_ergasias=E.ID_kathgorias 
+        and SP.ID_pediou=AE.ID_pediou 
+        and IK.ID_skill=AI.ID_ikanothtas
+        and A.ID_aggelias=AE.ID_aggelias 
+        and A.ID_aggelias=AI.ID_aggelias and ( """
+        for i in range(len(filters_keys)):
+            if(filters_keys[i]=='Misthos' or filters_keys[i]=="Apaitoumenh_proyphresia"):
+                if(i==len(filters_keys)-1):
+                    query+=("A."+str(filters_keys[i])+">=%d"%(filters_values[i])+")")
+                else:
+                    query+=("A."+str(filters_keys[i])+">=%d"%(filters_values[i])+" or ")
+            else:
+                if(i==len(filters_keys)-1):
+                    query+=("A."+str(filters_keys[i])+"='%s'"%(filters_values[i])+")")
+                else:
+                    query+=("A."+str(filters_keys[i])+"='%s'"%(filters_values[i])+" or ")
+        cur.execute(query)
+        data=cur.fetchall()
+        list_of_attributes=["Πάροχος","ID_αγγελίας","Τίτλος θέσης εργασίας","Τοποθεσία εργασίας","Ωράριο","Μισθός","Περιγραφή",
+                            "Απαιτούμενη προϋπηρεσία","Ημερομηνία δημοσίευσης","Πεδίο εργασίας","Απαιτούμενη εκπαίδευση:",
+                            "Βαθμίδα εκπαίδευσης","Ικανότητες","Κατηγορία ικανότητας"]
+        ar_aggelias=1
+        for j in range(len(data)):
+            print("Αγγελία "+str(ar_aggelias))
+            ar_aggelias+=1
+            for i in range(len(list_of_attributes)):
+                print(list_of_attributes[i]+": "+str(data[j][i]))
+
         return None
 
 
@@ -427,7 +472,6 @@ def Select_kathgories_ergasias():
     conn=db.create_connection(database)
     cur=conn.cursor()
     if(search=='0'):
-        print("edo eimai\n")
         query="""SELECT ID_kathgorias,Titlos from KATHGORIA_ERGASIAS"""
         cur.execute(query)
         titloi=cur.fetchall()
