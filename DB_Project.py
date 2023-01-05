@@ -148,7 +148,7 @@ def tables():
                                 ID_aggelias INTEGER NOT NULL,
                                 ID_paroxou INTEGER NOT NULL,
                                 ID_pediou INTEGER DEFAULT 0,
-                                Elaxisth_bathmida INTEGER,
+                                Elaxisth_bathmida INTEGER DEFAULT 1,
                                 FOREIGN KEY(ID_aggelias) REFERENCES AGGELIA_ERGASIAS(ID_aggelias)
                                 ON UPDATE CASCADE
                                 ON DELETE CASCADE,
@@ -165,7 +165,6 @@ def tables():
                                 ID_aggelias INTEGER NOT NULL,
                                 ID_paroxou INTEGER NOT NULL,
                                 ID_ikanothtas INTEGER NOT NULL,
-                                Epipedo INTEGER DEFAULT NULL,
                                 PRIMARY KEY(ID_aggelias,ID_paroxou,ID_ikanothtas),
                                 FOREIGN KEY(ID_aggelias) REFERENCES AGGELIA_ERGASIAS(ID_aggelias)
                                 ON UPDATE CASCADE
@@ -650,7 +649,7 @@ def main():
         data=jf.SignUP().Sign_UP()
         x=input("Πηγαινε με στην συναρτηση γαμω το σπιτι μου:")
         if(x):
-            jf.Empeiria().Ikanothta_ypopsifiou(jf.User_id_assignement(data["Email"]))
+            jf.Aithsh().Search_aggelies()
         print("Ας ξεκινήσουμε με την δημιουργία του προφίλ σας")
         id_assignement=jf.User_id_assignement(data["Email"])
         if data["Eidos_xrhsth"]=='A':
