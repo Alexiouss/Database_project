@@ -150,10 +150,16 @@ class SignIn():
     def Sign_In(self,email,password):
         conn=db.create_connection(database)
         cur=conn.cursor()
-        query="""SELECT User_ID,Email,Password from XRHSTHS where Email='%s' and Password='%s' """ % (email,password)
+        query="""SELECT User_ID,Eidos_xrhsth from XRHSTHS where Email='%s' and Password='%s' """ % (email,password)
         cur.execute(query)
         user=cur.fetchone()
-        return user
+        if(user==None):
+            print("Λάθος email ή password\nΠροσπαθήστε ξανά")
+            email=input("Email:")
+            password=input("password:")
+            self.Sign_In(email,password)
+        else:
+            return user
 
 class Empeiria():
     
@@ -248,6 +254,7 @@ class Empeiria():
         Select_kathgoria_ikanotitas(Kathgoria_skill)
         ikanotites=[int(ikanotita) for ikanotita in input().split()]
         self.Insert_ikanothta(id_ait,ikanotites)
+        self.Create_Ikanothta_ypopsifiou(id_ait)
         return None
     
     def Insert_ikanothta_ypopsifioy(self,id_ait,ikanotites):
@@ -364,6 +371,7 @@ class Apaithsh():
         Select_kathgoria_ikanotitas(Kathgoria_skill)
         ikatonites=[int(ikanotita) for ikanotita in input().split()]
         self.Insert_in_Apaitoumeni_ikanothta(ID_aggelias,id_par,ikatonites)
+        self.Create_Apaitoumeni_ikanothta(ID_aggelias,id_par)
         return None
 
 
@@ -379,7 +387,7 @@ class Apaithsh():
         conn.close()
         return None
 
-class Aithsh():
+class Anazhthsh_aggelion():
     def __init__(self):
         return
     
@@ -395,7 +403,7 @@ class Aithsh():
         if(len(titlos)>5):
             titlos[0].upper()  
             Filters['Titlos'] = titlos[0:5]
-        Filters['Topothesia']=input("Καταχωρήστε τοποθεσία(πόλη):")
+        Filters['Topothesia']=input("Καταχωρήστε την τοποθεσία(πόλη):")
         try:Filters['Topothesia'][0].upper()
         except:Filters['Topothesia']=''
         try:Filters['Wrario']=input("Εισάγεται τις ώρες/μέρα εργασίας:")
@@ -423,39 +431,122 @@ class Aithsh():
         for i in Filters.values():
             filters_values.append(i)
         query="""SELECT P.Eponymia,A.ID_aggelias,A.Titlos,A.Topothesia,A.Wrario,A.Misthos,A.Perigrafi,A.Apaitoumeni_proyphresia,
-        A.Hmeromhnia_dhmosieusis,E.Titlos as pedio_ergasias,SP.Titlos as titlos_ptyxiou,
-        AE.Elaxisth_bathmida,IK.Onoma as ikanotita,IK.Kathgoria
-        FROM AGGELIA_ERGASIAS AS A,PROFIL_PAROXOU as P,KATHGORIA_ERGASIAS as E,PEDIO_SPOUDON as SP,
-        APAITOUMENI_EKPAIDEYSI AS AE,IKANOTHTA AS IK,APAITEI_IKANOTHTA AS AI
+        A.Hmeromhnia_dhmosieusis,E.Titlos as pedio_ergasias
+        FROM AGGELIA_ERGASIAS AS A,PROFIL_PAROXOU as P,KATHGORIA_ERGASIAS as E
         WHERE A.ID_paroxou=P.ID_paroxou 
-        and A.ID_kathgorias_ergasias=E.ID_kathgorias 
-        and SP.ID_pediou=AE.ID_pediou 
-        and IK.ID_skill=AI.ID_ikanothtas
-        and A.ID_aggelias=AE.ID_aggelias 
-        and A.ID_aggelias=AI.ID_aggelias and ( """
+        and A.ID_kathgorias_ergasias=E.ID_kathgorias"""
+        if(len(Filters)!=0):
+            query+=" and ( "
+        
         for i in range(len(filters_keys)):
             if(filters_keys[i]=='Misthos' or filters_keys[i]=="Apaitoumenh_proyphresia"):
                 if(i==len(filters_keys)-1):
                     query+=("A."+str(filters_keys[i])+">=%d"%(filters_values[i])+")")
                 else:
-                    query+=("A."+str(filters_keys[i])+">=%d"%(filters_values[i])+" or ")
+                    query+=("A."+str(filters_keys[i])+">=%d"%(filters_values[i])+" and ")
             else:
                 if(i==len(filters_keys)-1):
                     query+=("A."+str(filters_keys[i])+"='%s'"%(filters_values[i])+")")
                 else:
-                    query+=("A."+str(filters_keys[i])+"='%s'"%(filters_values[i])+" or ")
+                    query+=("A."+str(filters_keys[i])+"='%s'"%(filters_values[i])+" and ")
         cur.execute(query)
         data=cur.fetchall()
+        cur.close()
         list_of_attributes=["Πάροχος","ID_αγγελίας","Τίτλος θέσης εργασίας","Τοποθεσία εργασίας","Ωράριο","Μισθός","Περιγραφή",
-                            "Απαιτούμενη προϋπηρεσία","Ημερομηνία δημοσίευσης","Πεδίο εργασίας","Απαιτούμενη εκπαίδευση:",
-                            "Βαθμίδα εκπαίδευσης","Ικανότητες","Κατηγορία ικανότητας"]
+                            "Απαιτούμενη προϋπηρεσία","Ημερομηνία δημοσίευσης","Πεδίο εργασίας"]
+        ekpaideysi=[]
+        cur1=conn.cursor()
+        for i in range(len(data)):
+            query_1="""SELECT SP.Titlos,AE.Elaxisth_bathmida 
+                        FROM PEDIO_SPOUDON as SP,APAITOUMENI_EKPAIDEYSI AS AE,AGGELIA_ERGASIAS AS A
+                        WHERE SP.ID_pediou=AE.ID_pediou 
+                        and A.ID_aggelias=AE.ID_aggelias and A.ID_aggelias=%d"""%data[i][1]
+            cur1.execute(query_1)
+            temp_data=cur1.fetchall()
+            ekpaideysi.append(temp_data)
+        cur1.close()
+        ikanotites=[]
+        cur2=conn.cursor()
+        for i in range(len(data)):
+            query_2="""SELECT IK.Onoma,IK.Kathgoria FROM IKANOTHTA AS IK,APAITEI_IKANOTHTA AS AI,AGGELIA_ERGASIAS AS A
+                    WHERE A.ID_aggelias=AI.ID_aggelias and AI.ID_ikanothtas=IK.ID_skill and A.ID_aggelias=%d"""%data[i][1]
+            cur2.execute(query_2)
+            temp_data=cur2.fetchall()
+            ikanotites.append(temp_data)
+        cur2.close()
         ar_aggelias=1
         for j in range(len(data)):
             print("Αγγελία "+str(ar_aggelias))
             ar_aggelias+=1
             for i in range(len(list_of_attributes)):
                 print(list_of_attributes[i]+": "+str(data[j][i]))
+            print("Απαιτούμενη εκπαίδευση,Βαθμίδα:",end='')
+            for l in range(len(ekpaideysi[j])):
+                if(l==len(ekpaideysi[j])-1):print(ekpaideysi[j][l])
+                else:print(ekpaideysi[j][l],end=',')
+            print("Ικανότητες:",end='')
+            for k in range(len(ikanotites[j])):
+                if(k==len(ikanotites[j])-1):print(ikanotites[j][k])
+                else:print(ikanotites[j][k],end=',')
+        return None
 
+class Aithsh():
+    def __init__(self):
+        return
+    def Create_Aithsh(self,id_ait):
+        id_aggelias=int(input("Διαλέξτε την αγγελία για την οποία θέλετε να κάνετε αίτηση:"))
+        conn=db.create_connection(database)
+        cur=conn.cursor()
+        query="""SELECT ID_paroxou 
+                FROM AGGELIA_ERGASIAS 
+                WHERE ID_aggelias=%d"""%(id_aggelias)
+        cur.execute(query)
+        id_par=cur.fetchone()
+        self.Insert_into_aithsh(id_ait,id_par[0],id_aggelias)
+        cur.close()
+        return None
+    
+    def Insert_into_aithsh(self,id_ait,id_paroxou,id_aggelias):
+        conn=db.create_connection(database)
+        cur=conn.cursor()
+        hm_nia=date.today()
+        query="""INSERT INTO AITHSH (ID_aitoumenou,ID_aithshs,ID_paroxou,ID_aggelias,Hmeromhnia_aithshs)
+                VALUES ('%d','1','%d','%d,'%s')"""%(id_ait,id_paroxou,id_aggelias,hm_nia)
+        cur.execute(query)
+        cur.close()
+        conn.commit()
+        conn.close()
+        return None
+
+class Aksiologhsh():
+    def __init__(self):
+        return None
+    
+    def Create_aksiologhsh(self,id_ait):
+        print("Αξιολογήστε κάποιον πάροχο.Διαλέξτε σύμφωνα με το ID του παρόχου.")
+        conn=db.create_connection(database)
+        cur=conn.cursor()
+        query="""SELECT ID_paroxou,Eponymia
+                FROM PROFIL_PAROXOU"""
+        cur.execute(query)
+        data=cur.fetchall()
+        cur.close()
+        conn.close()
+        for i in data:print(i)
+        id_par=int(input())
+        bathmos=int(input("Βαθμολογήστε τον πάροχο με μέγιστο το 5 και ελάχιστο το 1:"))
+        hm_nia_aksiiologisis=date.today()
+        self.Insert_into_askiologhsh(id_par,id_ait,bathmos,hm_nia_aksiiologisis)
+
+    def Insert_into_askiologhsh(self,ID_par,ID_ait,Bathmologia,Hm_nia):
+        conn=db.create_connection(database)
+        cur=conn.cursor()
+        query="""INSERT INTO AKSIOLOGHSH (ID_paroxou,ID_aitoumenou,Bathmologia,Hmeromhnia_aksiologishs)
+                VALUES('%d','%d','%d','%s')"""%(ID_par,ID_ait,Bathmologia,Hm_nia)
+        cur.execute(query)
+        cur.close()
+        conn.commit()
+        conn.close()
         return None
 
 
