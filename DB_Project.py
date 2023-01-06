@@ -2,7 +2,7 @@ import sqlite3
 from sqlite3 import Error
 import Job_Finder_project as jf
 
-NumofTables=15
+NumofTables=14
 
 def create_connection(db_file):
     conn=None
@@ -176,16 +176,7 @@ def tables():
                                 ON DELETE NO ACTION
                                 );"""
     
-    Tables[12]="""CREATE TABLE IF NOT EXISTS SYNTEYKSI(
-                                    ID_aithshs INTEGER NOT NULL,
-                                    Hmeromhnia_synenteyksis DATE NOT NULL DEFAULT '0000-00-00',
-                                    PRIMARY KEY(ID_aithshs),
-                                    FOREIGN KEY(ID_aithshs) REFERENCES AITHSH(ID_aithshs)
-                                    ON UPDATE CASCADE
-                                    ON DELETE CASCADE
-                                    );"""
-    
-    Tables[13]="""CREATE TABLE IF NOT EXISTS AITHSH(
+    Tables[12]="""CREATE TABLE IF NOT EXISTS AITHSH(
                                     ID_aitoumenou INTEGER NOT NULL,
                                     ID_aithshs INTEGER NOT NULL,
                                     ID_paroxou INTEGER NOT NULL,
@@ -203,13 +194,12 @@ def tables():
                                     ON DELETE SET NULL
                                     );"""
     
-    Tables[14]="""CREATE TABLE IF NOT EXISTS AKSIOLOGHSH(
+    Tables[13]="""CREATE TABLE IF NOT EXISTS AKSIOLOGHSH(
                                     ID_aksiologhshs INTEGER NOT NULL,
                                     ID_paroxou INTEGER NOT NULL,
                                     ID_aitoumenou INTEGER NOT NULL,
                                     Bathmologia INTEGER NOT NULL,
                                     Hmeromhnia_aksiologishs DATE NOT NULL DEFAULT '0000-00-00',
-                                    Perilipsi text,
                                     PRIMARY KEY(ID_aksiologhshs),
                                     FOREIGN KEY(ID_paroxou) REFERENCES PROFIL_PAROXOU(ID_paroxou)
                                     ON UPDATE CASCADE
@@ -648,7 +638,7 @@ def main():
         data=jf.SignUP().Sign_UP()
         x=input("Πηγαινε με στην συναρτηση γαμω το σπιτι μου:")
         if(x):
-            jf.Aithsh().Search_aggelies()
+            jf.Anazhthsh_aggelion().Search_aggelies()
         print("Ας ξεκινήσουμε με την δημιουργία του προφίλ σας")
         id_assignement=jf.User_id_assignement(data["Email"])
         if data["Eidos_xrhsth"]=='A':
@@ -665,6 +655,25 @@ def main():
         email=input("Email:")
         password=input("password:")
         user=jf.SignIn().Sign_In(email,password)
+        if(user[1]=='A'):
+            while True:
+                x=int(input("Διαλέξτε μία λειτουργία:0:Sign out\n1:Αναζήτηση και αίτηση αγγελιών\n2:Αξιολόγηση παρόχου"))
+                if(x==0):
+                    break
+                while True:
+                    if(x==1):
+                        jf.Anazhthsh_aggelion().Search_aggelies()
+                        n=int(input("Αν θέλετε να κάνετε αίτηση σε κάποια αγγελία πατήστε ένα αλλιώς πατήστε 0:"))
+                        if(n==1):
+                            jf.Aithsh.Create_Aithsh(user[0])
+                            break
+                        else:
+                            break
+                    elif(x==2):
+                        jf.Aksiologhsh().Create_aksiologhsh(user[0])
+                        break
+        elif(user[1]=='P'):
+            jf.Aggelia().Create_aggelia_erg(id_assignement)
     '''-----------Μετά το sign in ή μετά από όλη την διαδικασία δημιουργίας προφίλ αρχίζουμε την αναζήτηση την αίτηση-----------'''
     conn.commit()
     conn.close()
