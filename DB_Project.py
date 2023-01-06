@@ -2,7 +2,7 @@ import sqlite3
 from sqlite3 import Error
 import Job_Finder_project as jf
 
-NumofTables=15
+NumofTables=14
 
 def create_connection(db_file):
     conn=None
@@ -63,12 +63,12 @@ def tables():
                                 ID_aitoumenou INTEGER NOT NULL,
                                 Bathmos INTEGER DEFAULT NULL,
                                 Hmnia_enarksis DATE NOT NULL DEFAULT '0000-00-00',
-                                Hmnia_liksis DATE DEFAULT '0000-00-00',
+                                Hmnia_liksis DATE DEFAULT NULL,
                                 Bathmida INTEGER DEFAULT NULL,
                                 ID_pediou INTEGER DEFAULT 0,
                                 PRIMARY KEY(ID_aitoumenou,Hmnia_enarksis),
                                 FOREIGN KEY(ID_aitoumenou) REFERENCES PROFIL_AITOUMENOY(ID_aitoumenou)
-                                ON UPDATE NO ACTION
+                                ON UPDATE CASCADE
                                 ON DELETE CASCADE,
                                 FOREIGN KEY(ID_pediou) REFERENCES PEDIO_SPOUDON(Id_pediou)
                                 ON UPDATE CASCADE
@@ -83,14 +83,14 @@ def tables():
 
     Tables[5]="""CREATE TABLE IF NOT EXISTS PROYPHRESIA_YPOPSIFIOY(
                                 ID_aitoumenou INTEGER NOT NULL,
+                                ID_kathgorias_ergasias INTEGER NOT NULL,
                                 Titlos VARCHAR(100) NOT NULL,
                                 Paroxos VARCHAR(100) NOT NULL,
                                 Hmnia_enarksis DATE NOT NULL DEFAULT '0000-00-00',
                                 Hmnia_liskis DATE DEFAULT NULL,
-                                ID_kathgorias_ergasias INTEGER NOT NULL,
                                 PRIMARY KEY(ID_aitoumenou,Hmnia_enarksis),
                                 FOREIGN KEY(ID_aitoumenou) REFERENCES PROFIL_AITOUMENOY(ID_aitoumenou)
-                                ON UPDATE NO ACTION
+                                ON UPDATE CASCADE
                                 ON DELETE CASCADE,
                                 FOREIGN KEY(ID_kathgorias_ergasias) REFERENCES KATHGORIA_ERGASIAS(ID_kathgorias)
                                 ON UPDATE CASCADE
@@ -98,15 +98,14 @@ def tables():
                                 );"""
     
     Tables[6]="""CREATE TABLE IF NOT EXISTS KATHGORIA_ERGASIAS(
-                                    ID_kathgorias INTEGER NOT NULL,
-                                    Titlos VARCHAR(100) NOT NULL UNIQUE,
-                                    PRIMARY KEY(ID_kathgorias)
-                                    );"""
+                                ID_kathgorias INTEGER NOT NULL,
+                                Titlos VARCHAR(100) NOT NULL UNIQUE,
+                                PRIMARY KEY(ID_kathgorias)
+                                );"""
 
     Tables[7]="""CREATE TABLE IF NOT EXISTS KATEXEI_IKANOTHTA(
                                 ID_aitoumenou INTEGER NOT NULL,
                                 ID_ikanothtas INTEGER NOT NULL,
-                                Epipedo INTEGER DEFAULT NULL,
                                 PRIMARY KEY(ID_aitoumenou,ID_ikanothtas),
                                 FOREIGN KEY(ID_aitoumenou) REFERENCES PROFIL_AITOUMENOY(ID_aitoumenou)
                                 ON UPDATE CASCADE
@@ -118,23 +117,23 @@ def tables():
                                 """
     
     Tables[8]="""CREATE TABLE IF NOT EXISTS IKANOTHTA(
-                                    ID_skill INTEGER NOT NULL,
-                                    Onoma VARCHAR(50) NOT NULL,
-                                    Kathgoria VARCHAR(20) NOT NULL,
-                                    PRIMARY KEY(ID_skill)
-                                    );"""
+                                ID_skill INTEGER NOT NULL,
+                                Onoma VARCHAR(100) NOT NULL UNIQUE,
+                                Kathgoria VARCHAR(20) NOT NULL,
+                                PRIMARY KEY(ID_skill)
+                                );"""
 
     Tables[9]="""CREATE TABLE IF NOT EXISTS AGGELIA_ERGASIAS(
                                 ID_aggelias INTEGER NOT NULL,
                                 ID_paroxou INTEGER NOT NULL,
+                                ID_kathgorias_ergasias INTEGER NOT NULL,
+                                Titlos VARCHAR(100),
                                 Topothesia VARCHAR(50) NOT NULL,
-                                Wrario VARCHAR(30),
+                                Wrario VARCHAR(10),
                                 Misthos INTEGER,
                                 Perigrafi TEXT,
-                                Typos_ergasias VARCHAR(50),
-                                Titlos VARCHAR(100),
+                                Apaitoumeni_proyphresia INTEGER,
                                 Hmeromhnia_dhmosieusis DATE NOT NULL,
-                                ID_kathgorias_ergasias INTEGER NOT NULL,
                                 PRIMARY KEY(ID_aggelias,ID_paroxou),
                                 FOREIGN KEY(ID_paroxou) REFERENCES PROFIL_PAROXOU(ID_paroxou)
                                 ON UPDATE CASCADE
@@ -147,8 +146,8 @@ def tables():
     Tables[10]="""CREATE TABLE IF NOT EXISTS APAITOUMENI_EKPAIDEYSI(
                                 ID_aggelias INTEGER NOT NULL,
                                 ID_paroxou INTEGER NOT NULL,
-                                ID_pediou INTEGER,
-                                Elaxisth_bathmida INTEGER,
+                                ID_pediou INTEGER DEFAULT 0,
+                                Elaxisth_bathmida INTEGER DEFAULT 1,
                                 FOREIGN KEY(ID_aggelias) REFERENCES AGGELIA_ERGASIAS(ID_aggelias)
                                 ON UPDATE CASCADE
                                 ON DELETE CASCADE,
@@ -165,7 +164,6 @@ def tables():
                                 ID_aggelias INTEGER NOT NULL,
                                 ID_paroxou INTEGER NOT NULL,
                                 ID_ikanothtas INTEGER NOT NULL,
-                                Epipedo INTEGER DEFAULT NULL,
                                 PRIMARY KEY(ID_aggelias,ID_paroxou,ID_ikanothtas),
                                 FOREIGN KEY(ID_aggelias) REFERENCES AGGELIA_ERGASIAS(ID_aggelias)
                                 ON UPDATE CASCADE
@@ -178,48 +176,38 @@ def tables():
                                 ON DELETE NO ACTION
                                 );"""
     
-    Tables[12]="""CREATE TABLE IF NOT EXISTS SYNTEYKSI(
-                                    ID_aithshs INTEGER NOT NULL,
-                                    Hmeromhnia_synenteyksis DATE NOT NULL DEFAULT '0000-00-00',
-                                    PRIMARY KEY(ID_aithshs),
-                                    FOREIGN KEY(ID_aithshs) REFERENCES AITHSH(ID_aithshs)
-                                    ON UPDATE NO ACTION
-                                    ON DELETE NO ACTION
-                                    );"""
-    
-    Tables[13]="""CREATE TABLE IF NOT EXISTS AITHSH(
-                                    ID_aitoumenou INTEGER NOT NULL,
-                                    ID_aithshs INTEGER NOT NULL,
-                                    ID_paroxou INTEGER NOT NULL,
+    Tables[12]="""CREATE TABLE IF NOT EXISTS AITHSH(
+                                ID_aitoumenou INTEGER NOT NULL,
+                                ID_aithshs INTEGER NOT NULL,
+                                ID_paroxou INTEGER NOT NULL,
                                     ID_aggelias INTEGER NOT NULL,
                                     Hmeromhnia_aithshs DATE NOT NULL,
                                     PRIMARY KEY(ID_aithshs),
                                     FOREIGN KEY(ID_aitoumenou) REFERENCES PROFIL_AITOUMENOU(ID_aitoumenou)
-                                    ON UPDATE NO ACTION
-                                    ON DELETE NO ACTION,
+                                    ON UPDATE CASCADE
+                                    ON DELETE SET NULL,
                                     FOREIGN KEY(ID_aggelias) REFERENCES AGGELIA_ERGASIAS(ID_aggelias)
-                                    ON UPDATE NO ACTION
-                                    ON DELETE NO ACTION,
-                                    FOREIGN KEY(ID_paroxou) REFERENCES AGGELIA_ERGASIAS(ID_paroxou)
-                                    ON UPDATE NO ACTION
-                                    ON DELETE NO ACTION
-                                    );"""
+                                ON UPDATE CASCADE
+                                ON DELETE SET NULL,
+                                FOREIGN KEY(ID_paroxou) REFERENCES AGGELIA_ERGASIAS(ID_paroxou)
+                                ON UPDATE CASCADE
+                                ON DELETE SET NULL
+                                );"""
     
-    Tables[14]="""CREATE TABLE IF NOT EXISTS AKSIOLOGHSH(
-                                    ID_aksiologhshs INTEGER NOT NULL,
-                                    ID_paroxou INTEGER NOT NULL,
-                                    ID_aitoumenou INTEGER NOT NULL,
-                                    Bathmologia INTEGER NOT NULL,
-                                    Hmeromhnia_aksiologishs DATE NOT NULL DEFAULT '0000-00-00',
-                                    Perilipsi text,
-                                    PRIMARY KEY(ID_aksiologhshs),
-                                    FOREIGN KEY(ID_paroxou) REFERENCES PROFIL_PAROXOU(ID_paroxou)
-                                    ON UPDATE NO ACTION
-                                    ON DELETE NO ACTION,
-                                    FOREIGN KEY(ID_aitoumenou) REFERENCES PROFIL_AITOUMENOU(ID_aitoumenou)
-                                    ON UPDATE NO ACTION
-                                    ON DELETE NO ACTION
-                                    );"""
+    Tables[13]="""CREATE TABLE IF NOT EXISTS AKSIOLOGHSH(
+                                ID_aksiologhshs INTEGER NOT NULL,
+                                ID_paroxou INTEGER NOT NULL,
+                                ID_aitoumenou INTEGER NOT NULL,
+                                Bathmologia INTEGER NOT NULL,
+                                Hmeromhnia_aksiologishs DATE NOT NULL DEFAULT '0000-00-00',
+                                PRIMARY KEY(ID_aksiologhshs),
+                                FOREIGN KEY(ID_paroxou) REFERENCES PROFIL_PAROXOU(ID_paroxou)
+                                ON UPDATE CASCADE
+                                ON DELETE SET NULL,
+                                FOREIGN KEY(ID_aitoumenou) REFERENCES PROFIL_AITOUMENOU(ID_aitoumenou)
+                                ON UPDATE CASCADE
+                                ON DELETE SET NULL
+                                );"""
     
     return Tables
 
@@ -456,65 +444,65 @@ def in_kathgoria_ergasias(conn):
     cur=conn.cursor()
     insertion="""INSERT INTO KATHGORIA_ERGASIAS
                     (Titlos)
-                    VALUES('Τουρισμός / Ξενοδοχεία'),
-                    ('Εστίαση'),
-                    ('Μηχανικοί-Ηλεκτρολόγοι'),
-                    ('Μηχανικοί-Αρχιτέκτονες'),
-                    ('Μηχανικοί-Χημικοί'),
-                    ('Μηχανικοί-Πολιτικοί'),
-                    ('Μηχανικοί-Μηχανολόγοι'),
-                    ('Μηχανικοί-Αεροναυπηγοί'),
-                    ('Ναυτικοί'),
-                    ('Εκπαιδευτικοί'),
-                    ('Εξυπηρέτηση Πελατών / Call Center'),
-                    ('Λογιστήριο'),
-                    ('Τομέας Παραγωγής'),
-                    ('Δημιουργικό Τμήμα / Γραφίστες'),
-                    ('Διαφήμιση / Promotion'),
-                    ('Τράπεζες'),
-                    ('Επιστήμες'),
-                    ('Ανώτατη Διοίκηση'),
-                    ('Ασφάλειες'),
-                    ('Διαχείριση Ποιότητας'),
-                    ('Αερομεταφορές'),
-                    ('Μεσιτικά'),
-                    ('Γραμματειακή Υποστήριξη'),
-                    ('Υποστηρικτικοί Υπάλληλοι'),
-                    ('Αποθήκη / Logistics'),
-                    ('Οδηγοί'),
-                    ('Υπάλληλοι Γραφείου'),
-                    ('Μεταφορές'),
-                    ('Μάρκετινγκ'),
-                    ('Διοίκηση Επιχειρήσεων'),
-                    ('Αγροτικά'),
-                    ('Δημόσιες Σχέσεις'),
-                    ('Πολιτιστικά / Τέχνες'),
-                    ('Δημοσιογράφοι / ΜΜΕ'),
-                    ('Εθελοντικές Εργασίες'),
-                    ('Αισθητική / Κομμωτήρια'),
-                    ('Νομικοί'),
-                    ('Πωλήσεις'),
-                    ('Καταστήματα Λιανικής'),
-                    ('Τεχνικοί / Συντηρητές'),
-                    ('Οικιακοί Βοηθοί'),
-                    ('Επαγγέλματα Υγείας'),
-                    ('Πληροφορική'),
-                    ('Εξωτερικές Εργασίες / Security'),
-                    ('Χρηματοοικονομικά'),
-                    ('Αγορές / Προμήθεις'),
-                    ('Human Resources(HR)'),
-                    ('Τηλεπικοινωνίες'),
-                    ('Περιβάλλον'),
-                    ('Επιχειρηματικότητα'),
-                    ('Σύμβουλοι Επιχειρήσεων'),
-                    ('Δίκτυα')"""
+                    VALUES('τουρισμός / ξενοδοχεία'),
+                    ('εστίαση'),
+                    ('μηχανικοί-ηλεκτρολόγοι'),
+                    ('μηχανικοί-αρχιτέκτονες'),
+                    ('μηχανικοί-χημικοί'),
+                    ('μηχανικοί-πολιτικοί'),
+                    ('μηχανικοί-μηχανολόγοι'),
+                    ('μηχανικοί-αεροναυπηγοί'),
+                    ('ναυτικοί'),
+                    ('εκπαιδευτικοί'),
+                    ('εξυπηρέτηση πελατών / Call Center'),
+                    ('λογιστήριο'),
+                    ('τομέας παραγωγής'),
+                    ('δημιουργικό τμήμα / γραφίστες'),
+                    ('διαφήμιση / Promotion'),
+                    ('τράπεζες'),
+                    ('επιστήμες'),
+                    ('ανώτατη διοίκηση'),
+                    ('ασφάλειες'),
+                    ('διαχείριση ποιότητας'),
+                    ('αερομεταφορές'),
+                    ('μεσιτικά'),
+                    ('γραμματειακή υποστήριξη'),
+                    ('υποστηρικτικοί υπάλληλοι'),
+                    ('αποθήκη / logistics'),
+                    ('οδηγοί'),
+                    ('υπάλληλοι γραφείου'),
+                    ('μεταφορές'),
+                    ('μάρκετινγκ'),
+                    ('διοίκηση επιχειρήσεων'),
+                    ('αγροτικά'),
+                    ('δημόσιες σχέσεις'),
+                    ('πολιτιστικά / τέχνες'),
+                    ('δημοσιογράφοι / ΜΜΕ'),
+                    ('εθελοντικές εργασίες'),
+                    ('αισθητική / κομμωτήρια'),
+                    ('νομικοί'),
+                    ('πωλήσεις'),
+                    ('καταστήματα λιανικής'),
+                    ('τεχνικοί / συντηρητές'),
+                    ('οικιακοί βοηθοί'),
+                    ('επαγγέλματα υγείας'),
+                    ('πληροφορική'),
+                    ('εξωτερικές εργασίες / security'),
+                    ('χρηματοοικονομικά'),
+                    ('αγορές / προμήθεις'),
+                    ('human resources(HR)'),
+                    ('τηλεπικοινωνίες'),
+                    ('περιβάλλον'),
+                    ('επιχειρηματικότητα'),
+                    ('σύμβουλοι επιχειρήσεων'),
+                    ('δίκτυα')"""
     cur.execute(insertion)
     cur.close()
     return None
 
 def in_ikanotita(conn):
     cur= conn.cursor()
-    insertion1="""INSERT INTO IKANOTHTA
+    insertion2="""INSERT INTO IKANOTHTA
         (Onoma,Kathgoria)
         VALUES('Συντήρηση αυτοκινήτων','Hard'),
         ('Διαχείριση έργου','Hard'),
@@ -591,7 +579,6 @@ def in_ikanotita(conn):
         ('Καθοδήγηση','Soft'),
         ('Ενσυναίσθηση','Soft'),
         ('Υπομονή','Soft'),
-        ('Συνεργασία','Soft'),
         ('Συναισθηματική νοημοσύνη','Soft'),
         ('Επιρροή','Soft'),
         ('Αυτογνωσία','Soft'),
@@ -607,7 +594,6 @@ def in_ikanotita(conn):
         ('Καλλιτεχνία','Soft'),
         ('Ευθύνη','Soft'),
         ('Αφοσίωση','Soft'),
-        ('Αυτοπεποίθηση','Soft'),
         ('Εξυπηρέτηση πελατών','Soft'),
         ('Διαχείριση της ομάδας','Soft'),
         ('Τεκμηρίωση','Soft'),
@@ -618,7 +604,7 @@ def in_ikanotita(conn):
         ('Εκπαιδευτικές ικανότητες','Soft'),
         ('Διαχείριση κρίσης','Soft'),
         ('Προσαρμοστικότητα','Soft')"""
-    cur.execute(insertion1)
+    cur.execute(insertion2)
     cur.close()
     return None
 
@@ -633,9 +619,15 @@ def main():
         else:
             print("ERROR ERROR ERROR")
     try:
-        in_ikanotita(conn)
-        in_pedio_spoudon(conn)
         in_kathgoria_ergasias(conn)
+    except:
+        print("Data already inserted")
+    try:
+        in_pedio_spoudon(conn)
+    except:
+        print("Data already inserted")
+    try:
+        in_ikanotita(conn)
     except:
         print("Data already inserted")
     conn.commit()
@@ -644,30 +636,47 @@ def main():
     signing=int(input())
     if(signing==1):
         data=jf.SignUP().Sign_UP()
-        
+        x=input("Πηγαινε με στην συναρτηση γαμω το σπιτι μου:")
+        if(x):
+            jf.Anazhthsh_aggelion().Search_aggelies()
         print("Ας ξεκινήσουμε με την δημιουργία του προφίλ σας")
         id_assignement=jf.User_id_assignement(data["Email"])
         if data["Eidos_xrhsth"]=='A':
            jf.Profile_Creation().Create_ait_profil(data["Email"])
 
-           jf.User_skills_insertion().Create_education(id_assignement)
+           jf.Empeiria().Create_education(id_assignement)
            
-           jf.User_skills_insertion().Create_proyphresia(id_assignement)
+           jf.Empeiria().Create_proyphresia(id_assignement)
         elif data["Eidos_xrhsth"]=='P':
             jf.Profile_Creation().Create_paroxos_profil(data["Email"])
+            jf.Aggelia().Create_aggelia_erg(id_assignement)
     
     elif(signing==2):
         email=input("Email:")
         password=input("password:")
         user=jf.SignIn().Sign_In(email,password)
-    else:
-        jf.User_skills_insertion().Create_education()
+        if(user[1]=='A'):
+            while True:
+                x=int(input("Διαλέξτε μία λειτουργία:0:Sign out\n1:Αναζήτηση και αίτηση αγγελιών\n2:Αξιολόγηση παρόχου"))
+                if(x==0):
+                    break
+                while True:
+                    if(x==1):
+                        jf.Anazhthsh_aggelion().Search_aggelies()
+                        n=int(input("Αν θέλετε να κάνετε αίτηση σε κάποια αγγελία πατήστε ένα αλλιώς πατήστε 0:"))
+                        if(n==1):
+                            jf.Aithsh.Create_Aithsh(user[0])
+                            break
+                        else:
+                            break
+                    elif(x==2):
+                        jf.Aksiologhsh().Create_aksiologhsh(user[0])
+                        break
+        elif(user[1]=='P'):
+            jf.Aggelia().Create_aggelia_erg(id_assignement)
     '''-----------Μετά το sign in ή μετά από όλη την διαδικασία δημιουργίας προφίλ αρχίζουμε την αναζήτηση την αίτηση-----------'''
     conn.commit()
     conn.close()
 
 if __name__=="__main__":
     main()
-
-
-
