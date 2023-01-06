@@ -657,15 +657,15 @@ def main():
         user=jf.SignIn().Sign_In(email,password)
         if(user[1]=='A'):
             while True:
-                x=int(input("Διαλέξτε μία λειτουργία:0:Sign out\n1:Αναζήτηση και αίτηση αγγελιών\n2:Αξιολόγηση παρόχου"))
+                x=int(input("Διαλέξτε μία λειτουργία:\n0:Sign out\n1:Αναζήτηση και αίτηση αγγελιών\n2:Αξιολόγηση παρόχου\n"))
                 if(x==0):
                     break
                 while True:
                     if(x==1):
                         jf.Anazhthsh_aggelion().Search_aggelies()
-                        n=int(input("Αν θέλετε να κάνετε αίτηση σε κάποια αγγελία πατήστε ένα αλλιώς πατήστε 0:"))
+                        n=int(input("Αν θέλετε να κάνετε αίτηση σε κάποια αγγελία πατήστε 1 αλλιώς πατήστε 0:"))
                         if(n==1):
-                            jf.Aithsh.Create_Aithsh(user[0])
+                            jf.Aithsh().Create_Aithsh(user[0])
                             break
                         else:
                             break
