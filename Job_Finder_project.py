@@ -502,16 +502,16 @@ class Aithsh():
                 WHERE ID_aggelias=%d"""%(id_aggelias)
         cur.execute(query)
         id_par=cur.fetchone()
-        self.Insert_into_aithsh(id_ait,id_par[0],id_aggelias)
+        hm_nia=date.today()
+        self.Insert_into_aithsh(id_ait,id_par[0],id_aggelias,hm_nia)
         cur.close()
         return None
     
-    def Insert_into_aithsh(self,id_ait,id_paroxou,id_aggelias):
+    def Insert_into_aithsh(self,id_ait,id_paroxou,id_aggelias,hm_nia):
         conn=db.create_connection(database)
         cur=conn.cursor()
-        hm_nia=date.today()
-        query="""INSERT INTO AITHSH (ID_aitoumenou,ID_aithshs,ID_paroxou,ID_aggelias,Hmeromhnia_aithshs)
-                VALUES ('%d','1','%d','%d,'%s')"""%(id_ait,id_paroxou,id_aggelias,hm_nia)
+        query="""INSERT INTO AITHSH (ID_aitoumenou,ID_paroxou,ID_aggelias,Hmeromhnia_aithshs)
+                VALUES('%d','%d','%d','%s')"""%(id_ait,id_paroxou,id_aggelias,hm_nia)
         cur.execute(query)
         cur.close()
         conn.commit()
