@@ -124,7 +124,7 @@ def tables():
 
     Tables[9]="""CREATE TABLE IF NOT EXISTS AGGELIA_ERGASIAS(
                                 ID_aggelias INTEGER NOT NULL,
-                                ID_paroxou INTEGER NOT NULL,
+                                ID_paroxou INTEGER,
                                 ID_kathgorias_ergasias INTEGER NOT NULL,
                                 Titlos VARCHAR(100),
                                 Topothesia VARCHAR(50) NOT NULL,
@@ -167,7 +167,7 @@ def tables():
                                 );"""
     
     Tables[12]="""CREATE TABLE IF NOT EXISTS AITHSH(
-                                    ID_aitoumenou INTEGER NOT NULL,
+                                    ID_aitoumenou INTEGER,
                                     ID_aithshs INTEGER NOT NULL,
                                     ID_aggelias INTEGER NOT NULL,
                                     Hmeromhnia_aithshs DATE NOT NULL,
@@ -182,8 +182,8 @@ def tables():
     
     Tables[13]="""CREATE TABLE IF NOT EXISTS AKSIOLOGHSH(
                                     ID_aksiologhshs INTEGER NOT NULL,
-                                    ID_paroxou INTEGER NOT NULL,
-                                    ID_aitoumenou INTEGER NOT NULL,
+                                    ID_paroxou INTEGER,
+                                    ID_aitoumenou INTEGER,
                                     Bathmologia INTEGER NOT NULL,
                                     Hmeromhnia_aksiologishs DATE NOT NULL DEFAULT '0000-00-00',
                                     PRIMARY KEY(ID_aksiologhshs),
@@ -647,7 +647,7 @@ def main():
                 while True:
                     if(x==1):
                         jf.Anazhthsh_aggelion().Search_aggelies()
-                        n=int(input("Αν θέλετε να κάνετε αίτηση σε κάποια αγγελία πατήστε 1 αλλιώς πατήστε 0:"))
+                        n=int(input("\nΑν θέλετε να κάνετε αίτηση σε κάποια αγγελία πατήστε 1 αλλιώς πατήστε 0:"))
                         if(n==1):
                             jf.Aithsh().Create_Aithsh(user[0])
                             break

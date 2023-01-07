@@ -15,13 +15,9 @@ class SignUP():
             email=input("Email : ")
         data_email=self.Check_Email_existance(email)
         while(len(data_email)>0):
-            print("\nΦαίνεται πως υπάρχει ήδη λογαριασμός με αυτό το email\nΘέλετε να κάνετε Sign in;")
-            signin=int(input("\nΠατήστε 1 για να εισάγετε άλλο mail ή 2 για να συνεχίσετε με Sign In:"))
-            if(signin==1):
-                email=input("Email : ")
-                data_email=self.Check_Email_existance(email)
-            elif(signin==2):
-                SignIn()
+            print("\nΦαίνεται πως υπάρχει ήδη λογαριασμός με αυτό το email\nΔώστε άλλο email.")
+            email=input("Email : ")
+            data_email=self.Check_Email_existance(email)
         username=input("Username : ")
         while(username==''):
             print("\nΕισάγετε αποδεκτό Username.")
@@ -321,6 +317,7 @@ class Apaithsh():
             self.Insert_Apaitoumeni_ekpaideusi(int(ID_aggelias),1,bathmida)
         y=int(input("\nΑν θέλετε να εισάγετε κι άλλη εκπαίδευση πατήστε 1 αλλιώς πατήστε 0 : "))
         while(y==1):
+            bathmida=int(input("1:Δευτεροβάθμια 2:Πτυχίο 3:Master 4:Διδακτορικό : "))
             print("\nΕπιλέξτε ένα από τα παρακάτω πεδία σπουδών. ")
             Select_pedio_spoudon()        
             id_pediou=int(input("\nΕπιλέξτε τον κωδικό του πεδίου : "))
@@ -453,7 +450,7 @@ class Anazhthsh_aggelion():
         cur2.close()
         ar_aggelias=1
         for j in range(len(data)):
-            print("Αγγελία : "+str(ar_aggelias))
+            print("-----------------------------------------\nΑγγελία : "+str(ar_aggelias))
             ar_aggelias+=1
             for i in range(len(list_of_attributes)):
                 print(list_of_attributes[i]+": "+str(data[j][i]))
