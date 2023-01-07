@@ -213,7 +213,7 @@ class Empeiria():
         return None
 
     def Create_proyphresia(self,id_ait):
-        no_work_experience=input("\nΑν θέλετε να εισάγεται προϋπηρεσία πατήστε 1 αλλίως πατήστε 0 : ")
+        no_work_experience=int(input("\nΑν θέλετε να εισάγεται προϋπηρεσία πατήστε 1 αλλίως πατήστε 0 : "))
         if(no_work_experience==0):
             return None
         Select_kathgories_ergasias()
@@ -583,7 +583,130 @@ class Aksiologhsh():
         conn.close()
         return
 
+class Show_aitisis():
+    
+    def __init__(self):
+        return
+    
+    def show_aggelies(self,id_par):
+        conn=db.create_connection(database)
+        cur=conn.cursor()
+        query="""SELECT P.Eponymia,A.ID_aggelias,A.Titlos,A.Topothesia,A.Wrario,A.Misthos,A.Perigrafi,A.Apaitoumeni_proyphresia,
+        A.Hmeromhnia_dhmosieusis,E.Titlos as pedio_ergasias
+        FROM AGGELIA_ERGASIAS AS A,PROFIL_PAROXOU as P,KATHGORIA_ERGASIAS as E
+        WHERE A.ID_paroxou=P.ID_paroxou 
+        and A.ID_kathgorias_ergasias=E.ID_kathgorias and A.ID_paroxou=%d"""%(id_par)
+        cur.execute(query)
+        data=cur.fetchall()
+        cur.close()
+        list_of_attributes=["Πάροχος","ID_αγγελίας","Τίτλος θέσης εργασίας","Τοποθεσία εργασίας","Ωράριο","Μισθός","Περιγραφή",
+                            "Απαιτούμενη προϋπηρεσία","Ημερομηνία δημοσίευσης","Πεδίο εργασίας"]
+        ekpaideysi=[]
+        cur1=conn.cursor()
+        for i in range(len(data)):
+            query_1="""SELECT SP.Titlos,AE.Elaxisth_bathmida 
+                        FROM PEDIO_SPOUDON as SP,APAITOUMENI_EKPAIDEYSI AS AE,AGGELIA_ERGASIAS AS A
+                        WHERE SP.ID_pediou=AE.ID_pediou 
+                        and A.ID_aggelias=AE.ID_aggelias and A.ID_aggelias=%d"""%data[i][1]
+            cur1.execute(query_1)
+            temp_data=cur1.fetchall()
+            ekpaideysi.append(temp_data)
+        cur1.close()
+        ikanotites=[]
+        cur2=conn.cursor()
+        for i in range(len(data)):
+            query_2="""SELECT IK.Onoma,IK.Kathgoria FROM IKANOTHTA AS IK,APAITEI_IKANOTHTA AS AI,AGGELIA_ERGASIAS AS A
+                    WHERE A.ID_aggelias=AI.ID_aggelias and AI.ID_ikanothtas=IK.ID_skill and A.ID_aggelias=%d"""%data[i][1]
+            cur2.execute(query_2)
+            temp_data=cur2.fetchall()
+            ikanotites.append(temp_data)
+        cur2.close()
+        ar_aggelias=1
+        for j in range(len(data)):
+            print("Αγγελία : "+str(ar_aggelias))
+            ar_aggelias+=1
+            for i in range(len(list_of_attributes)):
+                print(list_of_attributes[i]+": "+str(data[j][i]))
+            print("Απαιτούμενη εκπαίδευση,Βαθμίδα : ",end='')
+            for l in range(len(ekpaideysi[j])):
+                if(l==len(ekpaideysi[j])-1):print(ekpaideysi[j][l])
+                else:print(ekpaideysi[j][l],end=',')
+            print("Ικανότητες : ",end='')
+            for k in range(len(ikanotites[j])):
+                if(k==len(ikanotites[j])-1):print(ikanotites[j][k])
+                else:print(ikanotites[j][k],end=',')
+        conn.close()
+        id_aggelias=int(input("Επιλέξτε την αγγελία για την οποία θέλετε να δείτε τις αιτήσεις σας: "))
+        self.show_aithsh(id_aggelias)
+        return None
 
+    def show_aithsh(self,id_aggelias):
+        conn=db.create_connection(database)
+        cur=conn.cursor()
+        query="""SELECT A.ID_aitoumenou,X.Username,Ait.Onoma,Ait.Eponymo,Ait.Hlikia,A.Hmeromhnia_aithshs,A.ID_aithshs
+                FROM ((PROFIL_AITOUMENOY as Ait JOIN AITHSH as A ON Ait.ID_aitoumenou=A.ID_aitoumenou) join XRHSTHS AS X ON X.User_ID=A.ID_aitoumenou)
+                WHERE A.ID_aggelias=%d"""%(id_aggelias)
+        cur.execute(query)
+        aithsh=cur.fetchall()
+        column_names=["ID_αιτούμενου","Username αιτούμενου","Όνομα","Επώνυμο","Ηλικία","Ημερομηνία αίτησης","ID_αίτησης"]
+        cur.close()
+        for i in range(len(aithsh)):
+            for j in range(len(column_names)):
+                print(column_names[j]+":"+str(aithsh[i][j]))
+        Username=input("Αν θέλετε να δείτε περισσότερες πληροφορίες για κάποιον αιτούμενο πληκτρολογήστε το Username του.Αλλιώς πατήστε enter:")
+        if(Username==''):
+            return None
+        cur_1=conn.cursor()
+        query_for_pedio_spoudon="""SELECT SP.Titlos AS TITLOS_EKPAIDEYSIS,Bathmida
+                                FROM PROFIL_AITOUMENOY AS PA JOIN EKPAIDEYSH_YPOPSIFIOY AS EY ON PA.ID_aitoumenou=EY.ID_aitoumenou JOIN PEDIO_SPOUDON AS SP ON EY.ID_pediou=SP.ID_pediou
+                                WHERE PA.ID_aitoumenou=(SELECT User_ID FROM XRHSTHS WHERE Username='%s')"""%(Username)
+        cur_1=conn.execute(query_for_pedio_spoudon)
+        pedio_spoudon=cur_1.fetchall()
+        for i in range(len(pedio_spoudon)):
+            print("Τίτλος εκπαίδευσης:"+str(pedio_spoudon[i][0]),end=',')
+            print("Βαθμίδα:"+str(pedio_spoudon[i][1]))
+        cur_1.close()
+
+        cur_2=conn.cursor()
+        query_for_proyphresia="""SELECT KE.Titlos AS Pedio_proyphresias_ypopsifiou,PY.Titlos,PY.Paroxos,PY.Hmnia_enarksis,PY.Hmnia_liskis 
+                                FROM PROFIL_AITOUMENOY AS PA JOIN PROYPHRESIA_YPOPSIFIOY AS PY ON PA.ID_aitoumenou=PY.ID_aitoumenou 
+                                JOIN KATHGORIA_ERGASIAS AS KE ON PY.ID_kathgorias_ergasias=KE.ID_kathgorias
+                                WHERE PA.ID_aitoumenou=(SELECT User_ID FROM XRHSTHS WHERE Username='%s' )"""%(Username)
+        cur_2=conn.execute(query_for_proyphresia)
+        proyphresia=cur_2.fetchall()
+        for i in range(len(proyphresia)):
+            print("Πεδίο εργασίας υποψηφίου:"+str(proyphresia[i][0]))
+            print("Τίτλος εργασίας:"+str(proyphresia[i][1]))
+            print("Πάροχος:"+str(proyphresia[i][2]))
+            print("Ημερομηνία έναρξης:"+str(proyphresia[i][3]))
+            if(proyphresia[i][4]==None):
+                print("Δουλεύει ακόμα εκεί")
+            else:
+                print("Ημερομηνία λήξης:"+str(proyphresia[i][4]))
+        cur_2.close()
+        cur_3=conn.cursor()
+        query_for_ikanotites="""SELECT IK.ONOMA AS Ikanothta_ypopsifiou,IK.Kathgoria AS Hard_Soft
+                                FROM PROFIL_AITOUMENOY AS PA JOIN KATEXEI_IKANOTHTA AS KI ON PA.ID_aitoumenou=KI.ID_aitoumenou 
+                                JOIN IKANOTHTA AS IK ON IK.ID_skill=KI.ID_ikanothtas
+                                WHERE PA.ID_aitoumenou=(SELECT User_ID FROM XRHSTHS WHERE Username='%s' )"""%(Username)
+        cur_3.execute(query_for_ikanotites)
+        ikanotites=cur_3.fetchall()
+        for i in range(len(ikanotites)):
+            print("Ικανότητα:"+str(ikanotites[i][0]),end=',')
+            print("Κατηγορία ικανότητας:"+str(ikanotites[i][1]))
+        cur_3.close()
+        conn.close()
+        return None
+    
+    def show_aksiologhsh(self,id_par):
+        conn=db.create_connection(database)
+        cur=conn.cursor()
+        query="""SELECT Bathmologia FROM PROFIL_PAROXOU WHERE ID_paroxou=%d"""%(id_par)
+        cur.execute(query)
+        bathmologia=cur.fetchone()
+        print("Η βαθμολογία σας είναι:"+str(bathmologia[0]))
+        return None
+        
 
 def User_id_assignement(email):
     conn=db.create_connection(database)
