@@ -173,7 +173,7 @@ class Empeiria():
     
     def Create_education(self,id_ait):
         print("\nΕπιλέξτε την βαθμίδα της εκπαίδευσης σας.")
-        bathmida=int(input("1:Τριτοβάθμια 2:Πτυχίο 3:Master 4:Διδακτορικό : "))
+        bathmida=int(input("1:Δευτεροβάθμια 2:Πτυχίο 3:Master 4:Διδακτορικό : "))
         if(bathmida==1):
             hmnia_enarksis=input("Έναρξη εκπαίδευσης. Χρησιμοποιήστε το format yyyy-mm-dd : ")
             hmnia_liksis=input("Λήξη εκπαίδευσης. Χρησιμοποιήστε το format yyyy-mm-dd : ")
@@ -275,8 +275,8 @@ class Aggelia():
         while(topothesia==''):
             print("Εισάγετε αποδεκτή Τοποθεσία : ")
             topothesia=input("\nΤοποθεσία : ")
-        wrario=input("Εισάγετε το ωράριο της θέση εργασίας :" )
-        misthos=int(input("Εισάγετε τον μισθό της θέσης εργασίας : "))
+        wrario=input("Εισάγετε το ωράριο της θέση εργασίας (ΑΝΑ ΗΜΕΡΑ) : " )
+        misthos=int(input("Εισάγετε τον μισθό της θέσης εργασίας (ΑΝΑ ΜΗΝΑ) : "))
         perigrafi=input("Εισάγετε περιγραφή : ")
         proyphresia=int(input("Εισάγετε απαιτούμενα έτη προϋπηρεσίας : "))
         hmnia_dhmosieusis=date.today()
@@ -319,33 +319,17 @@ class Apaithsh():
 
     def Create_Apaitoumeni_ekpaideusi(self,ID_aggelias):
         print("\nEπιλέξτε το επίπεδο εκπαίδευσης του υποψηφίου.")
-        bathmida=int(input("1:Τριτοβάθμια 2:Πτυχίο 3:Master 4:Διδακτορικό : "))
+        bathmida=int(input("1:Δευτεροβάθμια 2:Πτυχίο 3:Master 4:Διδακτορικό : "))
         if(bathmida==1):
             self.Insert_Apaitoumeni_ekpaideusi(int(ID_aggelias),1,bathmida)
-            x=int(input("Αν θέλετε να εισάγετε κι άλλη εκπαίδευση πατήστε 1 αλλιώς πατήστε 0 : "))
-            if(x==1):
-                self.Create_Apaitoumeni_ekpaideusi(ID_aggelias)
-            else:
-                return None
-        print("Επιλέξτε ένα από τα παρακάτω πεδία σπουδών : ")
-        search=input("Αναζητήστε το πεδίο σπουδών που επιθυμείτε για καλύτερα αποτελέσματα : ")
-        if(len(search)>5):
-            search=search[0:5]
-        search=search.upper()
-        conn=db.create_connection(database)
-        cur=conn.cursor()
-        placeholder="'%"+search+"%'"
-        query="""SELECT Id_pediou,Titlos from PEDIO_SPOUDON WHERE Titlos like %s"""%placeholder
-        cur.execute(query)
-        titloi=cur.fetchall()
-        for i in titloi:print(i)
-        id_pediou=int(input("Επιλέξτε τον κωδικό του πεδίου : "))
-        self.Insert_Apaitoumeni_ekpaideusi(int(ID_aggelias),id_pediou,bathmida)
-        x=int(input("\nΑν θέλετε να εισάγετε κι άλλη εκπαίδευση πατήστε 1 αλλιώς πατήστε 0 : "))
-        if(x==1):
-            self.Create_Apaitoumeni_ekpaideusi(ID_aggelias)
-        else:
-            return None
+        y=int(input("\nΑν θέλετε να εισάγετε κι άλλη εκπαίδευση πατήστε 1 αλλιώς πατήστε 0 ::: "))
+        while(y==1):
+            print("\nΕπιλέξτε ένα από τα παρακάτω πεδία σπουδών. ")
+            Select_pedio_spoudon()        
+            id_pediou=int(input("\nΕπιλέξτε τον κωδικό του πεδίου : "))
+            self.Insert_Apaitoumeni_ekpaideusi(int(ID_aggelias),id_pediou,bathmida)
+            y=int(input("\nΑν θέλετε να εισάγετε κι άλλη εκπαίδευση πατήστε 1 αλλιώς πατήστε 0 : "))
+        return None
 
     def Insert_Apaitoumeni_ekpaideusi(self,ID_aggelias,id_pediou,bathmida):
         conn=db.create_connection(database)
@@ -359,10 +343,10 @@ class Apaithsh():
         return None
 
     def Create_Apaitoumeni_ikanothta(self,ID_aggelias):
-        x=int(input("Εάν θέλετε να εισάγεται ικανότητες πιέστε 1 αλλίως πατήστε 0 : "))
+        x=int(input("\nΕάν θέλετε να εισάγεται ικανότητες πιέστε 1 αλλίως πατήστε 0 : "))
         if(x==0):
             return None
-        Kathgoria_skill=int(input("Επιλέξτε Hard skill ή soft skill. Πατήστε 1 για hard skill 2 για soft skill : "))
+        Kathgoria_skill=int(input("\nΕπιλέξτε Hard skill ή soft skill. Πατήστε 1 για hard skill 2 για soft skill : "))
         print("Διαλέξτε 0 ή παραπάνω από τις παραπάτω ικανότητες αφήνοντας ένα κενό διάστημα μεταξύ τους. Εισάγετε id : ")
         Select_kathgoria_ikanotitas(Kathgoria_skill)
         ikatonites=[int(ikanotita) for ikanotita in input().split()]
@@ -389,8 +373,8 @@ class Anazhthsh_aggelion():
     
     def Search_aggelies(self):
         Filters={}
-        print("Αναζήτηση αγγελιών.\nΦίλτρα αναζήτησης (Κατηγορία εργασίας,Τίτλος θέσης,Ωράριο,Μισθός,Τύπος εργασίας,Απαιτούμενη προϋπηρεσία) ")
-        print("Αν δεν θέλετε αναζήτηση με κάποιο φίλτρο πατήστε enter")
+        print("\nΑναζήτηση αγγελιών.\n\nΦίλτρα αναζήτησης (Κατηγορία εργασίας,Τίτλος θέσης,Ωράριο,Μισθός,Τύπος εργασίας,Απαιτούμενη προϋπηρεσία).")
+        print("Αν δεν θέλετε αναζήτηση με κάποιο φίλτρο πατήστε enter.")
         Select_kathgories_ergasias()
         try:Filters['ID_kathgorias_ergasias']=int(input("Επιλέξτε μία κατηγορία εργασίας από τις παρακάτω σύμφωνα με το id της : "))
         except:Filters.update({'ID_kathgorias_ergasias':''})
@@ -492,7 +476,7 @@ class Aithsh():
         return
     
     def Create_Aithsh(self,id_ait):
-        id_aggelias=int(input("Διαλέξτε την αγγελία για την οποία θέλετε να κάνετε αίτηση : "))
+        id_aggelias=int(input("Διαλέξτε την αγγελία για την οποία θέλετε να κάνετε αίτηση (ΔΩΣΤΕ ID) : "))
         conn=db.create_connection(database)
         cur=conn.cursor()
         query="""SELECT ID_paroxou 
@@ -501,15 +485,15 @@ class Aithsh():
         cur.execute(query)
         id_par=cur.fetchone()
         hm_nia=date.today()
-        self.Insert_into_aithsh(id_ait,id_par[0],id_aggelias,hm_nia)
+        self.Insert_into_aithsh(id_ait,id_aggelias,hm_nia)
         cur.close()
         return None
     
-    def Insert_into_aithsh(self,id_ait,id_paroxou,id_aggelias,hm_nia):
+    def Insert_into_aithsh(self,id_ait,id_aggelias,hm_nia):
         conn=db.create_connection(database)
         cur=conn.cursor()
-        query="""INSERT INTO AITHSH (ID_aitoumenou,ID_paroxou,ID_aggelias,Hmeromhnia_aithshs)
-                VALUES('%d','%d','%d','%s')"""%(id_ait,id_paroxou,id_aggelias,hm_nia)
+        query="""INSERT INTO AITHSH (ID_aitoumenou,ID_aggelias,Hmeromhnia_aithshs)
+                VALUES('%d','%d','%s')"""%(id_ait,id_aggelias,hm_nia)
         cur.execute(query)
         cur.close()
         conn.commit()
@@ -623,7 +607,7 @@ class Show_aitisis():
         cur2.close()
         ar_aggelias=1
         for j in range(len(data)):
-            print("Αγγελία : "+str(ar_aggelias))
+            print("\n\nΑγγελία : "+str(ar_aggelias))
             ar_aggelias+=1
             for i in range(len(list_of_attributes)):
                 print(list_of_attributes[i]+": "+str(data[j][i]))
@@ -720,7 +704,7 @@ def Select_kathgories_ergasias():
     titloi=[]
     while(len(titloi)==0):
         print("Αν θέλετε να δείτε όλες τις κατηγορίες πατήστε 0.")
-        search=input("Αναζητήστε την κατηγορία εργασίας για καλύτερα αποτελέσματα: ")
+        search=input("\nΑναζητήστε την κατηγορία εργασίας για καλύτερα αποτελέσματα: ")
         conn=db.create_connection(database)
         cur=conn.cursor()
         if(search=='0'):
