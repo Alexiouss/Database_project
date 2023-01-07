@@ -179,7 +179,7 @@ class Empeiria():
             hmnia_liksis=input("Λήξη εκπαίδευσης. Χρησιμοποιήστε το format yyyy-mm-dd : ")
             bathmos=input("Βαθμός απολυτηρίου : ")
             if(bathmos==''):bathmos=None
-            else:bathmos=int(bathmos)
+            else:bathmos=float(bathmos)
             Empeiria().Insert_ekpaideysi(id_ait,bathmos,hmnia_enarksis,hmnia_liksis,bathmida,1)
         else:
             Select_pedio_spoudon()
@@ -189,7 +189,7 @@ class Empeiria():
             if(hmnia_liksis==''):hmnia_liksis=date.today()
             bathmos=input("Βαθμός : ")
             if(bathmos==''):bathmos=None
-            else:bathmos=int(bathmos)
+            else:bathmos=float(bathmos)
             Empeiria().Insert_ekpaideysi(id_ait,bathmos,hmnia_enarksis,hmnia_liksis,bathmida,id_pediou)
         x=int(input("\nΑν θέλετε να εισάγετε κι άλλη εκπαίδευση πατήστε 1 αλλιώς πατήστε 0 : "))
         if(x==1):
@@ -205,7 +205,7 @@ class Empeiria():
                         VALUES ('%d','%s','%s','%d','%d')""" % (id_ait,hmnia_enarksis,hmnia_liksis,bathmida,id_pediou)
         else:
             query = """ INSERT INTO EKPAIDEYSH_YPOPSIFIOY (ID_aitoumenou,Bathmos,Hmnia_enarksis,Hmnia_liksis,Bathmida,ID_pediou) 
-                        VALUES ('%d','%d','%s','%s','%d','%d')""" % (id_ait,bathmos,hmnia_enarksis,hmnia_liksis,bathmida,id_pediou)
+                        VALUES ('%d','%f','%s','%s','%d','%d')""" % (id_ait,bathmos,hmnia_enarksis,hmnia_liksis,bathmida,id_pediou)
         cur.execute(query)
         cur.close()
         conn.commit()
@@ -214,19 +214,16 @@ class Empeiria():
 
     def Create_proyphresia(self,id_ait):
         no_work_experience=int(input("\nΑν θέλετε να εισάγεται προϋπηρεσία πατήστε 1 αλλίως πατήστε 0 : "))
-        if(no_work_experience==0):
-            return None
-        Select_kathgories_ergasias()
-        kathgoria=int(input("\nΕπιλέξτε μία κατηγορία εργασίας από τις παραπάνω εισάγωντας το id της : "))
-        titlos=input("Καταχωρήστε τον τίτλο εργασίας σας : ")
-        paroxos=input("Πάροχος : ")
-        Hmnia_enarksis=input("Ημερομηνία έναρξης. Χρησιμοποιήστε το format yyyy-mm-dd : ")
-        Hmnia_liksis=input("Ημερομηνία λήξης. Χρησιμοποιήστε το format yyyy-mm-dd. Αν δουλεύεται ακόμα εκεί πιέστε enter : ")
-        if(Hmnia_liksis==''):Hmnia_liksis="now"
-        x=int(input("Αν θέλετε να εισάγεται και άλλη προυπηρεσία πατήστε 1 αλλιώς πατήστε 0 : "))
-        if(x==1):Empeiria().Create_proyphresia(id_ait)
-        else:
+        while (no_work_experience==1):
+            Select_kathgories_ergasias()
+            kathgoria=int(input("\nΕπιλέξτε μία κατηγορία εργασίας από τις παραπάνω εισάγωντας το id της : "))
+            titlos=input("Καταχωρήστε τον τίτλο εργασίας σας : ")
+            paroxos=input("Πάροχος : ")
+            Hmnia_enarksis=input("Ημερομηνία έναρξης. Χρησιμοποιήστε το format yyyy-mm-dd : ")
+            Hmnia_liksis=input("Ημερομηνία λήξης. Χρησιμοποιήστε το format yyyy-mm-dd. Αν δουλεύεται ακόμα εκεί πιέστε enter : ")
+            if(Hmnia_liksis==''):Hmnia_liksis="now"
             self.Insert_proyphresia(id_ait,kathgoria,titlos,paroxos,Hmnia_enarksis,Hmnia_liksis)
+            no_work_experience=int(input("\nΑν θέλετε να εισάγεται προϋπηρεσία πατήστε 1 αλλίως πατήστε 0 : "))
         return None
 
     def Insert_proyphresia(self,id_ait,kathgoria,titlos,parochos,Hmnia_enarksis,Hmnia_liksis):
