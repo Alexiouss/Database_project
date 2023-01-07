@@ -65,7 +65,7 @@ def tables():
                                 Hmnia_enarksis DATE NOT NULL DEFAULT '0000-00-00',
                                 Hmnia_liksis DATE DEFAULT NULL,
                                 Bathmida INTEGER DEFAULT NULL,
-                                ID_pediou INTEGER DEFAULT 0,
+                                ID_pediou INTEGER DEFAULT 1,
                                 PRIMARY KEY(ID_aitoumenou,Hmnia_enarksis),
                                 FOREIGN KEY(ID_aitoumenou) REFERENCES PROFIL_AITOUMENOY(ID_aitoumenou)
                                 ON UPDATE CASCADE
@@ -172,7 +172,7 @@ def tables():
                                     ID_aggelias INTEGER NOT NULL,
                                     Hmeromhnia_aithshs DATE NOT NULL,
                                     PRIMARY KEY(ID_aithshs),
-                                    FOREIGN KEY(ID_aitoumenou) REFERENCES PROFIL_AITOUMENOU(ID_aitoumenou)
+                                    FOREIGN KEY(ID_aitoumenou) REFERENCES PROFIL_AITOUMENOY(ID_aitoumenou)
                                     ON UPDATE CASCADE
                                     ON DELETE SET NULL,
                                     FOREIGN KEY(ID_aggelias) REFERENCES AGGELIA_ERGASIAS(ID_aggelias)
@@ -190,7 +190,7 @@ def tables():
                                     FOREIGN KEY(ID_paroxou) REFERENCES PROFIL_PAROXOU(ID_paroxou)
                                     ON UPDATE CASCADE
                                     ON DELETE SET NULL,
-                                    FOREIGN KEY(ID_aitoumenou) REFERENCES PROFIL_AITOUMENOU(ID_aitoumenou)
+                                    FOREIGN KEY(ID_aitoumenou) REFERENCES PROFIL_AITOUMENOY(ID_aitoumenou)
                                     ON UPDATE CASCADE
                                     ON DELETE SET NULL
                                     );"""
@@ -657,7 +657,20 @@ def main():
                         jf.Aksiologhsh().Create_aksiologhsh(user[0])
                         break
         elif(user[1]=='P'):
-            jf.Aggelia().Create_aggelia_erg(id_assignement)
+            while True:
+                x=int(input("Διαλέξτε μία λειτουργία:\n0:Sign out\n1:Αναζήτηση των αιτήσεων σας\n2:Εμφάνιση αξιολόγησης\n3:Δημιουργία αγγελίας\n"))
+                if(x==0):
+                    break
+                while True:
+                    if(x==1):
+                        jf.Show_aitisis().show_aggelies(user[0])
+                        break
+                    elif(x==2):
+                        jf.Show_aitisis().show_aksiologhsh(user[0])
+                        break
+                    elif(x==3):
+                        jf.Aggelia().Create_aggelia_erg(user[0])
+                        break
     else:
         jf.Delete()
     conn.commit()
