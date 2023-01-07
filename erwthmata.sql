@@ -10,7 +10,12 @@ SELECT AVG(Misthos) as mesos_oros_misthwn
 FROM AGGELIA_ERGASIAS
 WHERE ID_kathgorias_ergasias=3
 
-/*Το άθροισμα των αγγελιών ενός παρόχου*/
+/*Το άθροισμα των αιτήσεων μίας αγγελίας ενός παρόχου*/
 SELECT COUNT(A.ID_paroxou) as aggelies_paroxou
 FROM (AGGELIA_ERGASIAS as A JOIN AITHSH as AIT ON Ait.ID_aggelias=A.ID_aggelias)
-WHERE ID_paroxou=3
+WHERE ID_paroxou=6
+
+/*Το πλήθος των ικανοτήτων κάθε αιτουμένου*/
+SELECT Username,COUNT(ID_aitoumenou) as plithos_ikanothtwn
+FROM KATEXEI_IKANOTHTA JOIN XRHSTHS on User_ID=ID_aitoumenou
+GROUP BY(ID_aitoumenou)
