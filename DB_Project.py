@@ -8,11 +8,11 @@ def create_connection(db_file):
     conn=None
     try:
         conn=sqlite3.connect(db_file)
+        conn.execute("PRAGMA foreign_keys = ON;")
         return conn
     except Error as e:
         print(e)
     return conn
-
 
 def create_table(conn,create_table_sql):
     try:
@@ -98,10 +98,10 @@ def tables():
                                 );"""
     
     Tables[6]="""CREATE TABLE IF NOT EXISTS KATHGORIA_ERGASIAS(
-                                ID_kathgorias INTEGER NOT NULL,
-                                Titlos VARCHAR(100) NOT NULL UNIQUE,
-                                PRIMARY KEY(ID_kathgorias)
-                                );"""
+                                    ID_kathgorias INTEGER NOT NULL,
+                                    Titlos VARCHAR(100) NOT NULL UNIQUE,
+                                    PRIMARY KEY(ID_kathgorias)
+                                    );"""
 
     Tables[7]="""CREATE TABLE IF NOT EXISTS KATEXEI_IKANOTHTA(
                                 ID_aitoumenou INTEGER NOT NULL,
@@ -113,15 +113,14 @@ def tables():
                                 FOREIGN KEY(ID_ikanothtas) REFERENCES IKANOTHTA(ID_skill)
                                 ON UPDATE CASCADE
                                 ON DELETE NO ACTION
-                                );
-                                """
+                                );"""
     
     Tables[8]="""CREATE TABLE IF NOT EXISTS IKANOTHTA(
-                                ID_skill INTEGER NOT NULL,
-                                Onoma VARCHAR(100) NOT NULL UNIQUE,
-                                Kathgoria VARCHAR(20) NOT NULL,
-                                PRIMARY KEY(ID_skill)
-                                );"""
+                                    ID_skill INTEGER NOT NULL,
+                                    Onoma VARCHAR(100) NOT NULL UNIQUE,
+                                    Kathgoria VARCHAR(20) NOT NULL,
+                                    PRIMARY KEY(ID_skill)
+                                    );"""
 
     Tables[9]="""CREATE TABLE IF NOT EXISTS AGGELIA_ERGASIAS(
                                 ID_aggelias INTEGER NOT NULL,
@@ -134,7 +133,7 @@ def tables():
                                 Perigrafi TEXT,
                                 Apaitoumeni_proyphresia INTEGER,
                                 Hmeromhnia_dhmosieusis DATE NOT NULL,
-                                PRIMARY KEY(ID_aggelias,ID_paroxou),
+                                PRIMARY KEY(ID_aggelias),
                                 FOREIGN KEY(ID_paroxou) REFERENCES PROFIL_PAROXOU(ID_paroxou)
                                 ON UPDATE CASCADE
                                 ON DELETE CASCADE,
@@ -145,13 +144,9 @@ def tables():
 
     Tables[10]="""CREATE TABLE IF NOT EXISTS APAITOUMENI_EKPAIDEYSI(
                                 ID_aggelias INTEGER NOT NULL,
-                                ID_paroxou INTEGER NOT NULL,
-                                ID_pediou INTEGER DEFAULT 0,
+                                ID_pediou INTEGER DEFAULT 1,
                                 Elaxisth_bathmida INTEGER DEFAULT 1,
                                 FOREIGN KEY(ID_aggelias) REFERENCES AGGELIA_ERGASIAS(ID_aggelias)
-                                ON UPDATE CASCADE
-                                ON DELETE CASCADE,
-                                FOREIGN KEY(ID_paroxou) REFERENCES AGGELIA_ERGASIAS(ID_paroxou)
                                 ON UPDATE CASCADE
                                 ON DELETE CASCADE,
                                 FOREIGN KEY(ID_pediou) REFERENCES PEDIO_SPOUDON(ID_pediou)
@@ -159,16 +154,11 @@ def tables():
                                 ON DELETE NO ACTION
                                 );"""
     
-
     Tables[11]="""CREATE TABLE IF NOT EXISTS APAITEI_IKANOTHTA(
                                 ID_aggelias INTEGER NOT NULL,
-                                ID_paroxou INTEGER NOT NULL,
                                 ID_ikanothtas INTEGER NOT NULL,
-                                PRIMARY KEY(ID_aggelias,ID_paroxou,ID_ikanothtas),
+                                PRIMARY KEY(ID_aggelias,ID_ikanothtas),
                                 FOREIGN KEY(ID_aggelias) REFERENCES AGGELIA_ERGASIAS(ID_aggelias)
-                                ON UPDATE CASCADE
-                                ON DELETE CASCADE,
-                                FOREIGN KEY(ID_paroxou) REFERENCES AGGELIA_ERGASIAS(ID_paroxou)
                                 ON UPDATE CASCADE
                                 ON DELETE CASCADE,
                                 FOREIGN KEY(ID_ikanothtas) REFERENCES IKANOTHTA(ID_skill)
@@ -177,9 +167,8 @@ def tables():
                                 );"""
     
     Tables[12]="""CREATE TABLE IF NOT EXISTS AITHSH(
-                                ID_aitoumenou INTEGER NOT NULL,
-                                ID_aithshs INTEGER NOT NULL,
-                                ID_paroxou INTEGER NOT NULL,
+                                    ID_aitoumenou INTEGER NOT NULL,
+                                    ID_aithshs INTEGER NOT NULL,
                                     ID_aggelias INTEGER NOT NULL,
                                     Hmeromhnia_aithshs DATE NOT NULL,
                                     PRIMARY KEY(ID_aithshs),
@@ -187,35 +176,33 @@ def tables():
                                     ON UPDATE CASCADE
                                     ON DELETE SET NULL,
                                     FOREIGN KEY(ID_aggelias) REFERENCES AGGELIA_ERGASIAS(ID_aggelias)
-                                ON UPDATE CASCADE
-                                ON DELETE SET NULL,
-                                FOREIGN KEY(ID_paroxou) REFERENCES AGGELIA_ERGASIAS(ID_paroxou)
-                                ON UPDATE CASCADE
-                                ON DELETE SET NULL
-                                );"""
+                                    ON UPDATE CASCADE
+                                    ON DELETE SET NULL
+                                    );"""
     
     Tables[13]="""CREATE TABLE IF NOT EXISTS AKSIOLOGHSH(
-                                ID_aksiologhshs INTEGER NOT NULL,
-                                ID_paroxou INTEGER NOT NULL,
-                                ID_aitoumenou INTEGER NOT NULL,
-                                Bathmologia INTEGER NOT NULL,
-                                Hmeromhnia_aksiologishs DATE NOT NULL DEFAULT '0000-00-00',
-                                PRIMARY KEY(ID_aksiologhshs),
-                                FOREIGN KEY(ID_paroxou) REFERENCES PROFIL_PAROXOU(ID_paroxou)
-                                ON UPDATE CASCADE
-                                ON DELETE SET NULL,
-                                FOREIGN KEY(ID_aitoumenou) REFERENCES PROFIL_AITOUMENOU(ID_aitoumenou)
-                                ON UPDATE CASCADE
-                                ON DELETE SET NULL
-                                );"""
+                                    ID_aksiologhshs INTEGER NOT NULL,
+                                    ID_paroxou INTEGER NOT NULL,
+                                    ID_aitoumenou INTEGER NOT NULL,
+                                    Bathmologia INTEGER NOT NULL,
+                                    Hmeromhnia_aksiologishs DATE NOT NULL DEFAULT '0000-00-00',
+                                    PRIMARY KEY(ID_aksiologhshs),
+                                    FOREIGN KEY(ID_paroxou) REFERENCES PROFIL_PAROXOU(ID_paroxou)
+                                    ON UPDATE CASCADE
+                                    ON DELETE SET NULL,
+                                    FOREIGN KEY(ID_aitoumenou) REFERENCES PROFIL_AITOUMENOU(ID_aitoumenou)
+                                    ON UPDATE CASCADE
+                                    ON DELETE SET NULL
+                                    );"""
     
     return Tables
 
 def in_pedio_spoudon(conn):
     cur= conn.cursor()
-    insertion1="""INSERT INTO PEDIO_SPOUDON
+    insertion="""INSERT INTO PEDIO_SPOUDON
             (Titlos)
-            VALUES('ΑΓΡΟΝΟΜΟΣ - ΤΟΠΟΓΡΑΦΟΣ ΜΗΧΑΝΙΚΟΣ'),
+            VALUES('ΑΠΟΛΥΤΗΡΙΟ ΛΥΚΕΙΟΥ'),
+            ('ΑΓΡΟΝΟΜΟΣ - ΤΟΠΟΓΡΑΦΟΣ ΜΗΧΑΝΙΚΟΣ'),
             ('ΑΓΡΟΤΟΟΙΚΟΝΟΜΟΛΟΓΟΣ'),
             ('ΑΙΣΘΗΤΙΚΟΣ'),
             ('ΑΝΘΡΩΠΟΛΟΓΟΣ'),
@@ -436,7 +423,7 @@ def in_pedio_spoudon(conn):
             ('ΧΗΜΙΚΟΣ - ΜΗΧΑΝΙΚΟΣ'),
             ('ΧΡΗΜΑΤΟΟΙΚΟΝΟΜΟΛΟΓΟΣ - ΤΡΑΠΕΖΟΔΙΟΙΚΗΤΙΚΟΣ'),
             ('ΨΥΧΟΛΟΓΟΣ')"""
-    cur.execute(insertion1)
+    cur.execute(insertion)
     cur.close()
     return None
 
@@ -502,7 +489,7 @@ def in_kathgoria_ergasias(conn):
 
 def in_ikanotita(conn):
     cur= conn.cursor()
-    insertion2="""INSERT INTO IKANOTHTA
+    insertion="""INSERT INTO IKANOTHTA
         (Onoma,Kathgoria)
         VALUES('Συντήρηση αυτοκινήτων','Hard'),
         ('Διαχείριση έργου','Hard'),
@@ -604,7 +591,7 @@ def in_ikanotita(conn):
         ('Εκπαιδευτικές ικανότητες','Soft'),
         ('Διαχείριση κρίσης','Soft'),
         ('Προσαρμοστικότητα','Soft')"""
-    cur.execute(insertion2)
+    cur.execute(insertion)
     cur.close()
     return None
 
@@ -612,7 +599,6 @@ def main():
     database="DB_project.db"
     sql_create_tables=tables()
     conn=create_connection(database)
-    conn.execute("PRAGMA foreign_keys = ON;")
     for i in range(0,NumofTables):
         if conn is not None:
             create_table(conn,sql_create_tables[i])
@@ -636,10 +622,7 @@ def main():
     signing=int(input())
     if(signing==1):
         data=jf.SignUP().Sign_UP()
-        x=input("Πηγαινε με στην συναρτηση γαμω το σπιτι μου:")
-        if(x):
-            jf.Anazhthsh_aggelion().Search_aggelies()
-        print("Ας ξεκινήσουμε με την δημιουργία του προφίλ σας")
+        print("\nΑς ξεκινήσουμε με την δημιουργία του προφίλ σας.\n")
         id_assignement=jf.User_id_assignement(data["Email"])
         if data["Eidos_xrhsth"]=='A':
            jf.Profile_Creation().Create_ait_profil(data["Email"])
@@ -647,25 +630,26 @@ def main():
            jf.Empeiria().Create_education(id_assignement)
            
            jf.Empeiria().Create_proyphresia(id_assignement)
+
+           jf.Empeiria().Create_Ikanothta_ypopsifiou(id_assignement)
+
         elif data["Eidos_xrhsth"]=='P':
             jf.Profile_Creation().Create_paroxos_profil(data["Email"])
             jf.Aggelia().Create_aggelia_erg(id_assignement)
     
     elif(signing==2):
-        email=input("Email:")
-        password=input("password:")
-        user=jf.SignIn().Sign_In(email,password)
+        user=jf.SignIn().Sign_In()
         if(user[1]=='A'):
             while True:
-                x=int(input("Διαλέξτε μία λειτουργία:0:Sign out\n1:Αναζήτηση και αίτηση αγγελιών\n2:Αξιολόγηση παρόχου"))
+                x=int(input("Διαλέξτε μία λειτουργία:\n0:Sign out\n1:Αναζήτηση και αίτηση αγγελιών\n2:Αξιολόγηση παρόχου\n"))
                 if(x==0):
                     break
                 while True:
                     if(x==1):
                         jf.Anazhthsh_aggelion().Search_aggelies()
-                        n=int(input("Αν θέλετε να κάνετε αίτηση σε κάποια αγγελία πατήστε ένα αλλιώς πατήστε 0:"))
+                        n=int(input("Αν θέλετε να κάνετε αίτηση σε κάποια αγγελία πατήστε 1 αλλιώς πατήστε 0:"))
                         if(n==1):
-                            jf.Aithsh.Create_Aithsh(user[0])
+                            jf.Aithsh().Create_Aithsh(user[0])
                             break
                         else:
                             break
@@ -674,7 +658,8 @@ def main():
                         break
         elif(user[1]=='P'):
             jf.Aggelia().Create_aggelia_erg(id_assignement)
-    '''-----------Μετά το sign in ή μετά από όλη την διαδικασία δημιουργίας προφίλ αρχίζουμε την αναζήτηση την αίτηση-----------'''
+    else:
+        jf.Delete()
     conn.commit()
     conn.close()
 
