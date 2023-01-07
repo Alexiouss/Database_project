@@ -322,7 +322,7 @@ class Apaithsh():
         bathmida=int(input("1:Δευτεροβάθμια 2:Πτυχίο 3:Master 4:Διδακτορικό : "))
         if(bathmida==1):
             self.Insert_Apaitoumeni_ekpaideusi(int(ID_aggelias),1,bathmida)
-        y=int(input("\nΑν θέλετε να εισάγετε κι άλλη εκπαίδευση πατήστε 1 αλλιώς πατήστε 0 ::: "))
+        y=int(input("\nΑν θέλετε να εισάγετε κι άλλη εκπαίδευση πατήστε 1 αλλιώς πατήστε 0 : "))
         while(y==1):
             print("\nΕπιλέξτε ένα από τα παρακάτω πεδία σπουδών. ")
             Select_pedio_spoudon()        
