@@ -167,7 +167,7 @@ def tables():
     
     Tables[12]="""CREATE TABLE IF NOT EXISTS AITHSH(
                                     ID_aitoumenou INTEGER,
-                                    ID_aithshs INTEGER NOT NULL,
+                                    ID_aithshs INTEGER,
                                     ID_aggelias INTEGER,
                                     Hmeromhnia_aithshs DATE NOT NULL,
                                     PRIMARY KEY(ID_aithshs),
@@ -617,4 +617,3 @@ def Create_db():
         print("Data already inserted")
     conn.commit()
     return None
-
